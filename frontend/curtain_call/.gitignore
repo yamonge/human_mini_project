@@ -26,3 +26,5 @@ yarn-error.log*
 /src/App.css
 /src/index.js
 /src/index.css
+/src/components/AuthLayout.js
+/src/components/MainLayout.js
