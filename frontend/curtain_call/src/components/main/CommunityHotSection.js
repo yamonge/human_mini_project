@@ -78,7 +78,9 @@ const CommunityHotSection = ({ hotPosts }) => {
       </Board>
 
       <ButtonRow>
-        <MoreButton>커뮤니티 전체 게시물 보기 →</MoreButton>
+        <MoreButton onClick={() => navigate("/community")}>
+          커뮤니티 전체 게시물 보기 →
+        </MoreButton>
       </ButtonRow>
     </Section>
   );
