@@ -3,6 +3,7 @@ import styled from "styled-components";
 import HeroSection from "./HeroSection";
 import MusicalListSection from "./MusicalListSection";
 import CommunityHotSection from "./CommunityHotSection";
+import Footer from "../common/Footer";
 
 const MainPage = () => {
   const [heroList, setHeroList] = useState([]);
@@ -241,6 +242,8 @@ const MainPage = () => {
         <MusicalListSection musicals={musicals} />
         <CommunityHotSection hotPosts={hotPosts} />
       </Container>
+
+      <Footer />
     </Page>
   );
 };
