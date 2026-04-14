@@ -143,12 +143,16 @@ const Signup = () => {
     navigate("/login"); // 로그인 페이지로 이동
   };
 
+  const handleClose = () => {
+    navigate("/"); // 메인으로 이동
+  };
+
   return (
     <LoginContainer>
       <Header>
         <Title>회원가입</Title>
         <Subtitle>새로운 계정을 만들어보세요</Subtitle>
-        <CloseButton>&times;</CloseButton>
+        <CloseButton onClick={handleClose}>&times;</CloseButton>
       </Header>
       <LoginForm onSubmit={handleSubmit}>
         <InputGroup>
@@ -284,26 +288,26 @@ const Signup = () => {
         <Button type="button" outline onClick={handleLoginClick}>
           로그인으로 돌아가기
         </Button>
-        <OrDivider>또는</OrDivider>
-        <SocialLoginGroup>
-          <SocialButton social="google">
-            <img
-              src="https://img.icons8.com/color/48/000000/google-logo.png"
-              alt="Google"
-              style={{ width: "20px", marginRight: "8px" }}
-            />
-            Google
-          </SocialButton>
-          <SocialButton social="github">
-            <img
-              src="https://img.icons8.com/ios-filled/50/000000/github.png"
-              alt="GitHub"
-              style={{ width: "20px", marginRight: "8px" }}
-            />
-            GitHub
-          </SocialButton>
-        </SocialLoginGroup>
       </LoginForm>
+      <OrDivider>또는</OrDivider>
+      <SocialLoginGroup>
+        <SocialButton social="google">
+          <img
+            src="https://img.icons8.com/color/48/000000/google-logo.png"
+            alt="Google"
+            style={{ width: "20px", marginRight: "8px" }}
+          />
+          Google
+        </SocialButton>
+        <SocialButton social="github">
+          <img
+            src="https://img.icons8.com/ios-filled/50/000000/github.png"
+            alt="GitHub"
+            style={{ width: "20px", marginRight: "8px" }}
+          />
+          GitHub
+        </SocialButton>
+      </SocialLoginGroup>
       <div
         style={{
           textAlign: "center",

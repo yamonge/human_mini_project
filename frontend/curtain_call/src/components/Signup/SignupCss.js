@@ -6,7 +6,7 @@ export const LoginContainer = styled.div`
   background-color: #111118;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  padding: 30px;
+  padding: 20px 30px;
   color: #f0f0f0;
   font-family: "Arial", sans-serif;
   position: relative;
@@ -14,7 +14,7 @@ export const LoginContainer = styled.div`
 `;
 
 export const Header = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 
 export const Title = styled.h2`
@@ -101,8 +101,9 @@ export const FindPasswordLink = styled.a`
 
 export const ErrorMessage = styled.p`
   font-size: 12px;
-  margin-top: 8px;
-  text-align: right;
+  position: absolute;
+  bottom: -18px;
+  right: 0;
   color: ${(props) => props.color || "red"};
 `;
 
