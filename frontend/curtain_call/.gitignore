@@ -28,3 +28,5 @@ yarn-error.log*
 /src/index.css
 /src/components/AuthLayout.js
 /src/components/MainLayout.js
+/src/components/MainLayout.js
+/src/components/AuthLayout.js
