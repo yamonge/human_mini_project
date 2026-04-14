@@ -14,7 +14,7 @@ import {
   ErrorMessage,
   SocialLoginGroup,
   SocialButton,
-  FindPasswordLink,
+  AccountRecovery,
   OrDivider,
 } from "../Login/LoginCss";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -97,6 +97,10 @@ const Login = () => {
     navigate("/"); // 메인으로 이동
   };
 
+  const handleAccountRecoveryClick = () => {
+    navigate("/account-recovery");
+  };
+
   return (
     <LoginContainer>
       <Header>
@@ -149,7 +153,9 @@ const Login = () => {
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
-            <FindPasswordLink href="#">아이디 · 비밀번호 찾기</FindPasswordLink>
+            <AccountRecovery onClick={handleAccountRecoveryClick}>
+              아이디 · 비밀번호 찾기
+            </AccountRecovery>
           </div>
           {isPasswordValid === "valid" && (
             <ErrorMessage color="green">
