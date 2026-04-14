@@ -8,7 +8,8 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 
-// 1. 전역 스타일 설정
+// 전역 스타일 설정
+
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
@@ -20,7 +21,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-// 2. Styled Components 정의
+// Styled Components
+const PageWrapper = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  background-color: #121214;
+`;
+
 const PageLayout = styled.div`
   max-width: 1024px;
   margin: 0 auto;
@@ -127,8 +134,8 @@ const SortDropdown = styled.button`
   gap: 8px;
   font-size: 14px;
   cursor: pointer;
-  height: 52px; /* SearchInput과 높이를 통일 */
-  white-space: nowrap; /* 글자가 줄바꿈되지 않도록 고정 */
+  height: 52px;
+  white-space: nowrap;
 `;
 
 const FilterRow = styled.div`
@@ -291,7 +298,7 @@ const FloatingWriteButton = styled.button`
   }
 `;
 
-// 3. 목업 데이터
+// 목업 데이터
 const dummyPosts = [
   {
     id: 1,
@@ -385,19 +392,19 @@ const filters = [
   "Q&A",
 ];
 
-// 4. 메인 컴포넌트 이름을 파일명과 일치시킴
-const CommunityList = () => {
-  const [activeFilter, setActiveFilter] = useState("전체");
+// 메인 컴포넌트 이름을 파일명과 일치시킴
 
+const CommunityList = ({ onWriteClick, onPostClick, posts = [] }) => {
+  const [activeFilter, setActiveFilter] = useState("전체");
   const [isSortOpen, setIsSortOpen] = useState(false); // 메뉴 열림/닫힘
   const [sortType, setSortType] = useState("최신순"); // 현재 선택된 정렬
-
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 추가
 
   // 검색어와 카테고리에 따라 게시글 필터링
-  const filteredPosts = dummyPosts.filter((post) => {
+  const filteredPosts = posts.filter((post) => {
     const matchesFilter =
       activeFilter === "전체" || post.category === activeFilter;
+
     const matchesSearch =
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.preview.toLowerCase().includes(searchTerm.toLowerCase());
@@ -408,104 +415,141 @@ const CommunityList = () => {
   return (
     <>
       <GlobalStyle />
-      <PageLayout>
-        <Header>
-          <BackButton>
-            <FiChevronLeft /> 홈으로 돌아가기
-          </BackButton>
-          <Title>커뮤니티</Title>
-          <SubTitle>뮤지컬 팬들과 자유롭게 이야기를 나눠보세요</SubTitle>
-        </Header>
-        <SearchBarRow>
-          <SearchInputWrapper>
-            <SearchIcon />
-            <SearchInput
-              type="text"
-              placeholder="게시글 검색..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)} // 입력 시 상태 업데이트
-            />
-          </SearchInputWrapper>
 
-          <div style={{ position: "relative", display: "flex" }}>
-            <SortDropdown onClick={() => setIsSortOpen(!isSortOpen)}>
-              {sortType} ▼
-            </SortDropdown>
+      <PageWrapper>
+        <PageLayout>
+          <Header>
+            <BackButton>
+              <FiChevronLeft /> 홈으로 돌아가기
+            </BackButton>
 
-            {isSortOpen && (
-              <DropdownMenu>
-                <DropdownItem
-                  onClick={() => {
-                    setSortType("최신순");
-                    setIsSortOpen(false);
-                  }}
-                >
-                  최신순
-                </DropdownItem>
-                <DropdownItem
-                  onClick={() => {
-                    setSortType("인기순");
-                    setIsSortOpen(false);
-                  }}
-                >
-                  인기순
-                </DropdownItem>
-              </DropdownMenu>
-            )}
-          </div>
-        </SearchBarRow>
-        <FilterRow>
-          {filters.map((filter) => (
-            <FilterTab
-              key={filter}
-              active={activeFilter === filter}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </FilterTab>
-          ))}
-        </FilterRow>
-        <PostList>
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
-              <PostCard key={post.id}>
-                <CategoryTag type={post.category}>{post.category}</CategoryTag>
-                <PostTitle>{post.title}</PostTitle>
-                <PostPreviewText>{post.preview}</PostPreviewText>
-                <PostMeta>
-                  <AuthorDate>
-                    <span>@{post.author}</span>
-                    <span>{post.date}</span>
-                  </AuthorDate>
-                  <CommentCount>
-                    <FiMessageSquare /> {post.comments}
-                  </CommentCount>
-                </PostMeta>
-              </PostCard>
-            ))
-          ) : (
-            <div
-              style={{ textAlign: "center", padding: "40px", color: "#5c5f63" }}
-            >
-              검색 결과가 없습니다.
+            <Title>커뮤니티</Title>
+
+            <SubTitle>뮤지컬 팬들과 자유롭게 이야기를 나눠보세요</SubTitle>
+          </Header>
+
+          <SearchBarRow>
+            <SearchInputWrapper>
+              <SearchIcon />
+
+              <SearchInput
+                type="text"
+                placeholder="게시글 검색..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)} // 입력 시 상태 업데이트
+              />
+            </SearchInputWrapper>
+
+            <div style={{ position: "relative", display: "flex" }}>
+              <SortDropdown onClick={() => setIsSortOpen(!isSortOpen)}>
+                {sortType} ▼
+              </SortDropdown>
+
+              {isSortOpen && (
+                <DropdownMenu>
+                  <DropdownItem
+                    onClick={() => {
+                      setSortType("최신순");
+
+                      setIsSortOpen(false);
+                    }}
+                  >
+                    최신순
+                  </DropdownItem>
+
+                  <DropdownItem
+                    onClick={() => {
+                      setSortType("인기순");
+
+                      setIsSortOpen(false);
+                    }}
+                  >
+                    인기순
+                  </DropdownItem>
+                </DropdownMenu>
+              )}
             </div>
-          )}
-        </PostList>
-        <Pagination>
-          <PageArrow>
-            <FiChevronLeft size={20} />
-          </PageArrow>
-          <PageNumber active>1</PageNumber>
-          <PageNumber>2</PageNumber>
-          <PageNumber>3</PageNumber>
-          <PageArrow>
-            <FiChevronRight size={20} />
-          </PageArrow>
-        </Pagination>
-        <FloatingWriteButton>
-          <FiEdit2 />
-        </FloatingWriteButton>
-      </PageLayout>
+          </SearchBarRow>
+
+          <FilterRow>
+            {filters.map((filter) => (
+              <FilterTab
+                key={filter}
+                active={activeFilter === filter}
+                onClick={() => setActiveFilter(filter)}
+              >
+                {filter}
+              </FilterTab>
+            ))}
+          </FilterRow>
+
+          <PostList>
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  onClick={() => onPostClick(post)}
+                  style={{ cursor: `pointer` }}
+                >
+                  <CategoryTag type={post.category}>
+                    {post.category}
+                  </CategoryTag>
+
+                  <PostTitle>{post.title}</PostTitle>
+
+                  <PostPreviewText>
+                    {post.content || post.preview}
+                  </PostPreviewText>
+
+                  <PostMeta>
+                    <AuthorDate>
+                      <span>@{post.author}</span>
+
+                      <span>{post.date}</span>
+                    </AuthorDate>
+
+                    <CommentCount>
+                      <FiMessageSquare /> {post.comments}
+                    </CommentCount>
+                  </PostMeta>
+                </PostCard>
+              ))
+            ) : (
+              <div
+                style={{
+                  textAlign: "center",
+
+                  padding: "40px",
+
+                  color: "#5c5f63",
+                }}
+              >
+                검색 결과가 없습니다.
+              </div>
+            )}
+          </PostList>
+
+          {/* <Pagination /> 나중에 합칠 예정*/}
+          {/*<Pagination>
+            <PageArrow>
+              <FiChevronLeft size={20} />
+            </PageArrow>
+            <PageNumber active>1</PageNumber>
+            <PageNumber>2</PageNumber>
+            <PageNumber>3</PageNumber>
+            <PageArrow>
+              <FiChevronRight size={20} />
+            </PageArrow>
+          </Pagination>
+          */}
+
+          <FloatingWriteButton onClick={onWriteClick}>
+            <FiEdit2 />
+          </FloatingWriteButton>
+
+          <GlobalStyle />
+        </PageLayout>
+      </PageWrapper>
     </>
   );
 };
