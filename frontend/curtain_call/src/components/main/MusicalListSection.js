@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import MusicalCard from "./MusicalCard";
+import Pagination from "../common/Pagination";
 
 const TABS = ["전체", "공연중", "공연예정", "공연종료"];
 const PAGE_SIZE = 8;
@@ -26,11 +27,6 @@ const MusicalListSection = ({ musicals }) => {
       return normalizedStatus === selectedTab;
     });
   }, [musicals, selectedTab]);
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredMusicals.length / PAGE_SIZE),
-  );
 
   const currentMusicals = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
@@ -76,35 +72,14 @@ const MusicalListSection = ({ musicals }) => {
         ))}
       </Grid>
 
-      <Pagination>
-        <ArrowButton
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          &lt;
-        </ArrowButton>
-
-        {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-          (page) => (
-            <PageButton
-              key={page}
-              $active={page === currentPage}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </PageButton>
-          ),
-        )}
-
-        <ArrowButton
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-        >
-          &gt;
-        </ArrowButton>
-      </Pagination>
+      <Pagination
+        totalCount={filteredMusicals.length}
+        itemsPerPage={PAGE_SIZE}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+        width={28}
+        height={28}
+      />
     </Section>
   );
 };
@@ -177,39 +152,4 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px 18px;
-`;
-
-const Pagination = styled.div`
-  margin-top: 28px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-`;
-
-const PageButton = styled.button`
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid ${({ $active }) => ($active ? "#C9A84C" : "#222b3a")};
-  background: ${({ $active }) => ($active ? "#C9A84C" : "transparent")};
-  color: ${({ $active }) => ($active ? "#111827" : "#8b95a7")};
-  font-size: 12px;
-  cursor: pointer;
-`;
-
-const ArrowButton = styled.button`
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid #222b3a;
-  background: transparent;
-  color: #8b95a7;
-  font-size: 12px;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.35;
-    cursor: default;
-  }
 `;

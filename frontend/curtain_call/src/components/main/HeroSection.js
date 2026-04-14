@@ -13,6 +13,16 @@ const HeroSection = ({ heroList = [] }) => {
     return dateString.replaceAll("-", ".");
   };
 
+  const getStarFillPercents = (rating) => {
+    const numericRating = Number(rating) || 0;
+    const fiveStarScore = numericRating / 2;
+
+    return Array.from({ length: 5 }, (_, index) => {
+      const fill = Math.max(0, Math.min(1, fiveStarScore - index));
+      return fill * 100;
+    });
+  };
+
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? heroList.length - 1 : prev - 1));
   };
@@ -38,7 +48,17 @@ const HeroSection = ({ heroList = [] }) => {
               <Title>{hero.title}</Title>
 
               <RatingRow>
-                <Stars>★ ★ ★ ★ ★</Stars>
+                <StarsWrapper>
+                  {getStarFillPercents(hero.rating).map(
+                    (fillPercent, index) => (
+                      <StarBox key={`${hero.musicalId}-star-${index}`}>
+                        <StarBase>★</StarBase>
+                        <StarFill $fillPercent={fillPercent}>★</StarFill>
+                      </StarBox>
+                    ),
+                  )}
+                </StarsWrapper>
+
                 <Score>{hero.rating}</Score>
               </RatingRow>
 
@@ -160,10 +180,39 @@ const RatingRow = styled.div`
   margin-bottom: 18px;
 `;
 
-const Stars = styled.span`
+const StarsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+`;
+
+const StarBox = styled.span`
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  line-height: 1;
+`;
+
+const StarBase = styled.span`
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: rgba(255, 255, 255, 0.28);
   font-size: 16px;
+  line-height: 1;
+`;
+
+const StarFill = styled.span`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: ${({ $fillPercent }) => `${$fillPercent}%`};
+  overflow: hidden;
+  white-space: nowrap;
   color: #c9a84c;
-  letter-spacing: 1px;
+  font-size: 16px;
+  line-height: 1;
 `;
 
 const Score = styled.span`
