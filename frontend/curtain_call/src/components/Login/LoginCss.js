@@ -86,7 +86,7 @@ export const LoginInput = styled.input`
     `}
 `;
 
-export const FindPasswordLink = styled.a`
+export const AccountRecovery = styled.a`
   position: absolute;
   right: 0;
   top: -28px;
@@ -94,7 +94,7 @@ export const FindPasswordLink = styled.a`
   color: #888;
   text-decoration: none;
   &:hover {
-    text-decoration: underline;
+    cursor: pointer;
   }
 `;
 
