@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import Pagination from "../common/Pagination";
+import Footer from "../common/Footer";
 
 const REVIEW_PAGE_SIZE = 5;
 
@@ -503,6 +504,7 @@ const MusicalDetailPage = () => {
           </RightPanel>
         </Layout>
       </Container>
+      <Footer />
     </Page>
   );
 };
