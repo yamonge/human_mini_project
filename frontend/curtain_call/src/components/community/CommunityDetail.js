@@ -243,16 +243,16 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
   const [commentInput, setCommentInput] = useState("");
   const [comments, setComments] = useState([
     {
-      id: 1,
+      commentId: 1,
       author: "같이갈래요",
-      date: "2026.04.08",
+      createdAt: "2026.04.08",
       content: "저 관심 있어요! 쪽지 보내볼게요 :)",
       profileColor: "#00C471",
     },
     {
-      id: 2,
+      commentId: 2,
       author: "위키드러버",
-      date: "2026.04.08",
+      createdAt: "2026.04.08",
       content: "@같이갈래요 쪽지 확인했어요! 답장 드릴게요~",
       profileColor: "#ff4d4d",
     },
@@ -279,9 +279,10 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
     console.log("백엔드로 보낼 댓글 데이터:", commentData);
 
     const newComment = {
-      id: Date.now(), // 고유 ID 생성
+      commentId: Date.now(), // 고유 ID 생성
+      userId: userId,
       author: "나(User)", // 실제 구현 시 로그인한 사용자명
-      date: new Date().toLocaleDateString(), // 오늘 날짜
+      createdAt: new Date().toLocaleDateString(), // 오늘 날짜
       content: commentInput,
       profileColor: "#c9a84c",
     };
@@ -293,9 +294,12 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
 
   // 댓글 삭제 함수
 
-  const handleDeleteComment = (id) => {
+  const handleDeleteComment = (targetCommentId) => {
+    console.log("삭제 시도 ID:", targetCommentId);
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
-      setComments(comments.filter((comment) => comment.id !== id));
+      setComments(
+        comments.filter((comment) => comment.commentId !== targetCommentId),
+      );
     }
   };
 
@@ -319,7 +323,7 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
               <ProfileCircle color="#ff4d4d">위</ProfileCircle>
               <AuthorInfo>
                 <AuthorName>{post.author}</AuthorName>
-                <PostDate>{post.date}</PostDate>
+                <PostDate>{post.createdAt}</PostDate>
               </AuthorInfo>
             </AuthorSection>
             <PostContent>
@@ -352,7 +356,7 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
 
             <CommentList>
               {comments.map((comment) => (
-                <CommentItem key={comment.id}>
+                <CommentItem key={comment.commentId}>
                   <ProfileCircle color={comment.profileColor}>
                     {comment.author.substring(0, 1)}
                   </ProfileCircle>
@@ -361,13 +365,13 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
                     <CommentMeta>
                       <AuthorDateBox>
                         <CommentAuthor>{comment.author}</CommentAuthor>
-                        <PostDate>{comment.date}</PostDate>
+                        <PostDate>{comment.createdAt}</PostDate>
                       </AuthorDateBox>
 
                       {/* 삭제 버튼: 작성자가 '나(User)'일 때만 노출 */}
-                      {comment.author === "나(User)" && (
+                      {comment.userId === userId && (
                         <DeleteButton
-                          onClick={() => handleDeleteComment(comment.id)}
+                          onClick={() => handleDeleteComment(comment.commentId)}
                         >
                           삭제
                         </DeleteButton>
