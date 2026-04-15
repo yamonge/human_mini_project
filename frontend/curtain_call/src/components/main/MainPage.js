@@ -8,7 +8,7 @@ import Footer from "../common/Footer";
 const MainPage = () => {
   const [heroList, setHeroList] = useState([]);
   const [musicals, setMusicals] = useState([]);
-  const [hotPosts, setHotPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -198,36 +198,48 @@ const MainPage = () => {
       },
     ];
 
-    const dummyHotPosts = [
+    const dummyPosts = [
       {
         postId: 1,
-        category: "공지사항",
-        title: "오페라의 유령 후기 공유해요!",
+        category: "티켓 양도",
+        title: "레 미제라블 2층 R석 양도합니다",
         commentCount: 124,
       },
       {
         postId: 2,
-        category: "퇴근후기",
-        title: "서울 뮤지컬 보러 가는데 추천해주세요",
+        category: "정보 공유",
+        title: "이번 주 할인 이벤트 정리해봤어요",
         commentCount: 15,
       },
       {
         postId: 3,
-        category: "공연일기",
+        category: "공연후기",
         title: "레 미제라블 4번대 관람 후기입니다",
         commentCount: 89,
       },
       {
         postId: 4,
-        category: "질문 글",
+        category: "Q&A",
         title: "2026년 상반기 뮤지컬 라인업 총정리",
         commentCount: 203,
+      },
+      {
+        postId: 5,
+        category: "토크 공간",
+        title: "가장 좋아하는 넘버 하나씩 적어봐요",
+        commentCount: 55,
+      },
+      {
+        postId: 6,
+        category: "공연 메이트",
+        title: "이번 주말 같이 보실 분 구합니다",
+        commentCount: 41,
       },
     ];
 
     setHeroList(dummyHeroList);
     setMusicals(dummyMusicals);
-    setHotPosts(dummyHotPosts);
+    setPosts(dummyPosts);
     setLoading(false);
   }, []);
 
@@ -240,7 +252,7 @@ const MainPage = () => {
       <Container>
         <HeroSection heroList={heroList} />
         <MusicalListSection musicals={musicals} />
-        <CommunityHotSection hotPosts={hotPosts} />
+        <CommunityHotSection posts={posts} />
       </Container>
 
       <Footer />
