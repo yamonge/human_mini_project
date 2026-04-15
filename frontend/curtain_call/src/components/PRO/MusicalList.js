@@ -257,13 +257,13 @@ const PageButton = styled.button`
 `;
 
 const MusicalItem = ({ data }) => {
-  const calculateDday =  (startDate) => {
+  const calculateDday = (startDate) => {
     const today = new Date();
     const targetDate = new Date(startDate);
     const diffTime = targetDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays > 0 ? `D-${diffDays}` : "D-day";
-  }
+  };
   const getStatusStyle = (status) => {
     switch (status) {
       case "공연중":
