@@ -10,9 +10,9 @@ const Footer = () => {
     });
   };
 
-  const handleMoveCommunityTab = (tab) => {
+  const handleMoveCommunityCategory = (category) => {
     navigate("/community", {
-      state: { selectedCategory: tab },
+      state: { selectedCategory: category },
     });
   };
 
@@ -45,21 +45,24 @@ const Footer = () => {
               >
                 전체 공연
               </MenuLink>
+
               <MenuLink
                 type="button"
                 onClick={() => handleMoveMusicalTab("공연중")}
               >
                 현재 공연
               </MenuLink>
+
               <MenuLink
                 type="button"
                 onClick={() => handleMoveMusicalTab("공연예정")}
               >
                 개막 예정
               </MenuLink>
+
               <MenuLink
                 type="button"
-                onClick={() => handleMoveMusicalTab("공연종료")}
+                onClick={() => handleMoveMusicalTab("공연완료")}
               >
                 공연 종료
               </MenuLink>
@@ -71,44 +74,44 @@ const Footer = () => {
               <CommunityGrid>
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("자유게시판")}
+                  onClick={() => handleMoveCommunityCategory("티켓 양도")}
                 >
-                  자유게시판
+                  티켓 양도
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("뮤지컬 후기")}
+                  onClick={() => handleMoveCommunityCategory("정보 공유")}
                 >
-                  뮤지컬 후기
+                  정보 공유
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("같이봐요")}
+                  onClick={() => handleMoveCommunityCategory("공연메이트")}
                 >
-                  같이봐요
+                  공연메이트
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("정보공유")}
+                  onClick={() => handleMoveCommunityCategory("토크 공간")}
                 >
-                  정보공유
+                  토크 공간
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("공지사항")}
+                  onClick={() => handleMoveCommunityCategory("공연후기")}
                 >
-                  공지사항
+                  공연후기
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("질문 글")}
+                  onClick={() => handleMoveCommunityCategory("Q&A")}
                 >
-                  질문 글
+                  Q&amp;A
                 </MenuLink>
               </CommunityGrid>
             </CommunityColumn>
@@ -179,7 +182,7 @@ const BrandName = styled.h2`
 `;
 
 const BrandDescription = styled.p`
-  margin: 0 0 18px 0;
+  margin: 0;
   font-size: 12px;
   line-height: 1.7;
   color: #7f8aa3;
@@ -200,7 +203,7 @@ const MenuColumn = styled.div`
 const CommunityColumn = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 260px;
+  min-width: 280px;
 `;
 
 const MenuTitle = styled.h3`
@@ -228,7 +231,7 @@ const MenuLink = styled.button`
 
 const CommunityGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(100px, 1fr));
+  grid-template-columns: repeat(2, minmax(110px, 1fr));
   column-gap: 28px;
   row-gap: 0;
 `;

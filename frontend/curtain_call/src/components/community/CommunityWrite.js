@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiChevronLeft } from "react-icons/fi";
 import styled, { createGlobalStyle } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 // 스타일
 const GlobalStyle = createGlobalStyle`
@@ -172,7 +173,8 @@ const ActionButton = styled.button`
   }
 `;
 
-const CommunityWrite = ({ onBackClick, onSave, userId = 1 }) => {
+const CommunityWrite = ({ onSave, userId = 1 }) => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -203,8 +205,10 @@ const CommunityWrite = ({ onBackClick, onSave, userId = 1 }) => {
     // 부모 컴포넌트의 저장 로직 실행
     if (onSave) {
       onSave(postData);
-      alert("게시글이 등록되었습니다.");
     }
+
+    alert("게시글이 등록되었습니다.");
+    navigate("/community");
   };
 
   return (
@@ -212,7 +216,7 @@ const CommunityWrite = ({ onBackClick, onSave, userId = 1 }) => {
       <GlobalStyle />
       <PageWrapper>
         <PageLayout>
-          <BackLink onClick={onBackClick}>
+          <BackLink onClick={() => navigate("/community")}>
             <FiChevronLeft /> 커뮤니티로 돌아가기
           </BackLink>
 
@@ -260,7 +264,10 @@ const CommunityWrite = ({ onBackClick, onSave, userId = 1 }) => {
             </InputGroup>
 
             <ButtonRow>
-              <ActionButton variant="secondary" onClick={onBackClick}>
+              <ActionButton
+                variant="secondary"
+                onClick={() => navigate("/community")}
+              >
                 취소
               </ActionButton>
               <ActionButton variant="primary" onClick={handleSubmit}>
