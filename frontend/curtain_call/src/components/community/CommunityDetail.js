@@ -246,14 +246,14 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
       id: 1,
       author: "같이갈래요",
       date: "2026.04.08",
-      text: "저 관심 있어요! 쪽지 보내볼게요 :)",
+      content: "저 관심 있어요! 쪽지 보내볼게요 :)",
       profileColor: "#00C471",
     },
     {
       id: 2,
       author: "위키드러버",
       date: "2026.04.08",
-      text: "@같이갈래요 쪽지 확인했어요! 답장 드릴게요~",
+      content: "@같이갈래요 쪽지 확인했어요! 답장 드릴게요~",
       profileColor: "#ff4d4d",
     },
   ]);
@@ -282,7 +282,7 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
       id: Date.now(), // 고유 ID 생성
       author: "나(User)", // 실제 구현 시 로그인한 사용자명
       date: new Date().toLocaleDateString(), // 오늘 날짜
-      text: commentInput,
+      content: commentInput,
       profileColor: "#c9a84c",
     };
 
@@ -373,7 +373,7 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
                         </DeleteButton>
                       )}
                     </CommentMeta>
-                    <CommentText>{comment.text}</CommentText>
+                    <CommentText>{comment.content}</CommentText>
                   </CommentBody>
                 </CommentItem>
               ))}

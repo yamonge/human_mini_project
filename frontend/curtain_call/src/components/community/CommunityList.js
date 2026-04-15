@@ -304,80 +304,80 @@ const dummyPosts = [
     id: 1,
     category: "정보 공유",
     title: "대학로 소극장 뮤지컬 추천 리스트 2026",
-    preview:
+    content:
       "대형 공연 외에 소극장 뮤지컬도 놓치면 아까운 작품들이 많아요. 올해 대학로 픽 목록 공유합니다.",
     author: "소극장마니아",
-    date: "2026.04.06",
+    created_at: "2026.04.06",
     comments: 33,
   },
   {
     id: 2,
     category: "토크 공간",
     title: "최애 뮤지컬 넘버 하나만 꼽는다면?",
-    preview:
+    content:
       "저는 레미제라블의 ‘One Day More’입니다. 웅장함에 울컥하게 터지는 순간 소름이 돋아요. 여러분은요?",
     author: "넘버collector",
-    date: "2026.04.06",
+    created_at: "2026.04.06",
     comments: 0,
   },
   {
     id: 3,
     category: "Q&A",
     title: "뮤지컬 영어 원서 대본 구하는 방법?",
-    preview:
+    content:
       "지킬앤하이드 영어 대본 공부하고 싶은데 어디서 구할 수 있나요? 공식 출판본이 있는지도 궁금합니다.",
     author: "영어공부주",
-    date: "2026.04.07",
+    created_at: "2026.04.07",
     comments: 11,
   },
   {
     id: 4,
     category: "공연메이트",
     title: "레미제라블 고수 분들 같이 N차 관람 어떤가요?",
-    preview:
+    content:
       "올해 이미 세 번 봤는데 같이 N차 관람하고 후기 나눌 분 구합니다. 오픈 카카오 공유할게요.",
     author: "레미마니아",
-    date: "2026.04.07",
+    created_at: "2026.04.07",
     comments: 23,
   },
   {
     id: 5,
     category: "티켓 양도",
     title: "4/18 오페라의 유령 VIP석 양도 - 정가",
-    preview:
+    content:
       "예매처 취소 불가 기간이 지나서 양도합니다. VIP석 단석, 정가 양도이며 비대면 안전거래 가능합니다.",
     author: "양도천사",
-    date: "2026.04.07",
+    created_at: "2026.04.07",
     comments: 5,
   },
   {
     id: 6,
     category: "공연메이트",
     title: "4/20 위키드 혼자 보러 가는데 같이 가실 분?",
-    preview:
+    content:
       "4월 20일 오후 2시 샤롯데씨어터 위키드 관람 예정입니다. 혼자 보기 아쉬워서 같이 가실 분 구해요!",
     author: "위키드러버",
-    date: "2026.04.08",
+    created_at: "2026.04.08",
     comments: 14,
   },
   {
     id: 7,
     category: "공연후기",
     title: "맘마미아 보고 온 50대 엄마의 후기",
-    preview:
+    content:
       "딸이 사줘서 처음 뮤지컬 봤어요. 너무 재밌어서 또 보고 싶습니다. ABBA 노래 너무 좋고 배우들도 최고예요!",
     author: "행복한엄마",
-    date: "2026.04.08",
+    created_at: "2026.04.08",
     comments: 89,
   },
   {
     id: 8,
     category: "정보 공유",
     title: "LG아트센터 주차 정보 & 주변 맛집 총정리",
-    preview:
+    content:
       "LG아트센터 자주 가시는 분들을 위해 근처 주차장이랑 맛집 정리해봤어요. 공연 전후로 활용하세요!",
     author: "아트센터단골",
-    date: "2026.04.08",
+    created_at: "2026.04.08",
     comments: 47,
   },
 ];
