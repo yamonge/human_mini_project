@@ -301,83 +301,91 @@ const FloatingWriteButton = styled.button`
 // 목업 데이터
 const dummyPosts = [
   {
-    id: 1,
+    postId: 1,
+    userId: 101,
     category: "정보 공유",
     title: "대학로 소극장 뮤지컬 추천 리스트 2026",
     content:
       "대형 공연 외에 소극장 뮤지컬도 놓치면 아까운 작품들이 많아요. 올해 대학로 픽 목록 공유합니다.",
     author: "소극장마니아",
-    created_at: "2026.04.06",
+    createdAt: "2026.04.06",
     comments: 33,
   },
   {
-    id: 2,
+    postId: 2,
+    userId: 102,
     category: "토크 공간",
     title: "최애 뮤지컬 넘버 하나만 꼽는다면?",
     content:
       "저는 레미제라블의 ‘One Day More’입니다. 웅장함에 울컥하게 터지는 순간 소름이 돋아요. 여러분은요?",
     author: "넘버collector",
-    created_at: "2026.04.06",
+    createdAt: "2026.04.06",
     comments: 0,
   },
   {
-    id: 3,
+    postId: 3,
+    userId: 103,
     category: "Q&A",
     title: "뮤지컬 영어 원서 대본 구하는 방법?",
     content:
       "지킬앤하이드 영어 대본 공부하고 싶은데 어디서 구할 수 있나요? 공식 출판본이 있는지도 궁금합니다.",
     author: "영어공부주",
-    created_at: "2026.04.07",
+    createdAt: "2026.04.07",
     comments: 11,
   },
   {
-    id: 4,
+    postId: 4,
+    userId: 104,
     category: "공연메이트",
     title: "레미제라블 고수 분들 같이 N차 관람 어떤가요?",
     content:
       "올해 이미 세 번 봤는데 같이 N차 관람하고 후기 나눌 분 구합니다. 오픈 카카오 공유할게요.",
     author: "레미마니아",
-    created_at: "2026.04.07",
+    createdAt: "2026.04.07",
     comments: 23,
   },
   {
-    id: 5,
+    postId: 5,
+    userId: 105,
     category: "티켓 양도",
     title: "4/18 오페라의 유령 VIP석 양도 - 정가",
     content:
       "예매처 취소 불가 기간이 지나서 양도합니다. VIP석 단석, 정가 양도이며 비대면 안전거래 가능합니다.",
     author: "양도천사",
-    created_at: "2026.04.07",
+    createdAt: "2026.04.07",
     comments: 5,
   },
   {
-    id: 6,
+    postId: 6,
+    userId: 106,
     category: "공연메이트",
     title: "4/20 위키드 혼자 보러 가는데 같이 가실 분?",
     content:
       "4월 20일 오후 2시 샤롯데씨어터 위키드 관람 예정입니다. 혼자 보기 아쉬워서 같이 가실 분 구해요!",
     author: "위키드러버",
-    created_at: "2026.04.08",
+    createdAt: "2026.04.08",
     comments: 14,
   },
   {
-    id: 7,
+    postId: 7,
+    userId: 107,
     category: "공연후기",
     title: "맘마미아 보고 온 50대 엄마의 후기",
     content:
       "딸이 사줘서 처음 뮤지컬 봤어요. 너무 재밌어서 또 보고 싶습니다. ABBA 노래 너무 좋고 배우들도 최고예요!",
     author: "행복한엄마",
-    created_at: "2026.04.08",
+    createdAt: "2026.04.08",
     comments: 89,
   },
   {
-    id: 8,
+    postId: 8,
+    userId: 108,
     category: "정보 공유",
     title: "LG아트센터 주차 정보 & 주변 맛집 총정리",
     content:
       "LG아트센터 자주 가시는 분들을 위해 근처 주차장이랑 맛집 정리해봤어요. 공연 전후로 활용하세요!",
     author: "아트센터단골",
-    created_at: "2026.04.08",
+    createdAt: "2026.04.08",
     comments: 47,
   },
 ];
@@ -400,14 +408,16 @@ const CommunityList = ({ onWriteClick, onPostClick, posts = [] }) => {
   const [sortType, setSortType] = useState("최신순"); // 현재 선택된 정렬
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 추가
 
+  const displayPosts = posts.length > 0 ? posts : dummyPosts;
+
   // 검색어와 카테고리에 따라 게시글 필터링
-  const filteredPosts = posts.filter((post) => {
+  const filteredPosts = displayPosts.filter((post) => {
     const matchesFilter =
       activeFilter === "전체" || post.category === activeFilter;
 
     const matchesSearch =
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.preview.toLowerCase().includes(searchTerm.toLowerCase());
+      (post.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (post.content || "").toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesFilter && matchesSearch;
   });
@@ -416,15 +426,12 @@ const CommunityList = ({ onWriteClick, onPostClick, posts = [] }) => {
   const sortedPosts = [...filteredPosts].sort((a, b) => {
     if (sortType === "최신순") {
       // 날짜 내림차순 정렬 (최신이 위로)
-      return (
-        new Date(b.date.replace(/\./g, "-")) -
-        new Date(a.date.replace(/\./g, "-"))
-      );
-    } else if (sortType === "인기순") {
-      // 댓글 수 내림차순 정렬 (많은 것이 위로)
-      return b.comments - a.comments;
+      const dateA = new Date((a.createdAt || "").replace(/\./g, "-"));
+      const dateB = new Date((b.createdAt || "").replace(/\./g, "-"));
+      return dateB - dateA;
+    } else {
+      return (b.comments || 0) - (a.comments || 0);
     }
-    return 0;
   });
 
   return (
@@ -502,7 +509,7 @@ const CommunityList = ({ onWriteClick, onPostClick, posts = [] }) => {
             {sortedPosts.length > 0 ? (
               sortedPosts.map((post) => (
                 <PostCard
-                  key={post.id}
+                  key={post.postId}
                   onClick={() => onPostClick(post)}
                   style={{ cursor: `pointer` }}
                 >
@@ -520,7 +527,7 @@ const CommunityList = ({ onWriteClick, onPostClick, posts = [] }) => {
                     <AuthorDate>
                       <span>@{post.author}</span>
 
-                      <span>{post.date}</span>
+                      <span>{post.createdAt}</span>
                     </AuthorDate>
 
                     <CommentCount>
