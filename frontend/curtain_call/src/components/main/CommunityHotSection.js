@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { communityPosts } from "../community/CommunityList";
 
 const categoryStyleMap = {
   "티켓 양도": {
@@ -14,6 +15,12 @@ const categoryStyleMap = {
     bg: "rgba(61, 217, 196, 0.14)",
     iconBg: "rgba(61, 217, 196, 0.16)",
     icon: "📢",
+  },
+  공연메이트: {
+    text: "#60A5FA",
+    bg: "rgba(96, 165, 250, 0.14)",
+    iconBg: "rgba(96, 165, 250, 0.16)",
+    icon: "🤝",
   },
   "공연 메이트": {
     text: "#60A5FA",
@@ -41,18 +48,18 @@ const categoryStyleMap = {
   },
 };
 
-const CommunityHotSection = ({ posts = [] }) => {
+const CommunityHotSection = () => {
   const navigate = useNavigate();
 
   const hotPosts = useMemo(() => {
-    return [...posts]
+    return [...communityPosts]
       .sort((a, b) => {
-        const aCount = Number(a.commentCount || 0);
-        const bCount = Number(b.commentCount || 0);
+        const aCount = Number(a.comments ?? a.commentCount ?? 0);
+        const bCount = Number(b.comments ?? b.commentCount ?? 0);
         return bCount - aCount;
       })
       .slice(0, 4);
-  }, [posts]);
+  }, []);
 
   const handleMovePostDetail = (postId) => {
     navigate(`/community/${postId}`);
@@ -67,7 +74,7 @@ const CommunityHotSection = ({ posts = [] }) => {
       <SmallLabel>COMMUNITY</SmallLabel>
       <Title>커뮤니티 HOT 게시물</Title>
 
-      {posts.length === 0 ? (
+      {hotPosts.length === 0 ? (
         <EmptyBox>아직 커뮤니티 게시글이 없습니다</EmptyBox>
       ) : (
         <>
@@ -81,8 +88,11 @@ const CommunityHotSection = ({ posts = [] }) => {
                   icon: "•",
                 };
 
+                const postId = post.postId ?? post.id;
+                const commentCount = post.comments ?? post.commentCount ?? 0;
+
                 return (
-                  <PostItem key={post.postId}>
+                  <PostItem key={postId}>
                     <LeftArea>
                       <IconCircle $iconBg={style.iconBg}>
                         <IconText>{style.icon}</IconText>
@@ -93,16 +103,16 @@ const CommunityHotSection = ({ posts = [] }) => {
                           {post.category}
                         </CategoryPill>
 
-                        <PostTitle
-                          onClick={() => handleMovePostDetail(post.postId)}
+                        <PostTitleText
+                          onClick={() => handleMovePostDetail(postId)}
                         >
                           {post.title}
-                        </PostTitle>
+                        </PostTitleText>
                       </PostTextArea>
                     </LeftArea>
 
                     <MetaArea>
-                      <CommentMeta>💬 {post.commentCount ?? 0}</CommentMeta>
+                      <CommentMeta>💬 {commentCount}</CommentMeta>
                     </MetaArea>
                   </PostItem>
                 );
@@ -216,7 +226,7 @@ const CategoryPill = styled.span`
   background: ${({ $bg }) => $bg};
 `;
 
-const PostTitle = styled.p`
+const PostTitleText = styled.p`
   margin: 0;
   font-size: 14px;
   color: #dde3ee;

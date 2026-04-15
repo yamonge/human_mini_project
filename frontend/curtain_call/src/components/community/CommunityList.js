@@ -6,7 +6,7 @@ import {
   FiMessageSquare,
   FiEdit2,
 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -274,7 +274,7 @@ const EmptyBox = styled.div`
   border-radius: 16px;
 `;
 
-const dummyPosts = [
+export const communityPosts = [
   {
     postId: 1,
     userId: 101,
@@ -373,23 +373,38 @@ const filters = [
   "Q&A",
 ];
 
-const CommunityList = ({ posts = dummyPosts }) => {
+const CommunityList = ({ posts = communityPosts }) => {
   const navigate = useNavigate();
-  const [activeFilter, setActiveFilter] = useState("전체");
-  const [isSortOpen, setIsSortOpen] = useState(false); // 메뉴 열림/닫힘
-  const [sortType, setSortType] = useState("최신순"); // 현재 선택된 정렬
-  const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 추가
+  const location = useLocation();
+  const initialCategory = location.state?.selectedCategory || "전체";
 
-  const displayPosts = posts.length > 0 ? posts : dummyPosts;
+  const [activeFilter, setActiveFilter] = useState(initialCategory);
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [sortType, setSortType] = useState("최신순");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // 검색어와 카테고리에 따라 게시글 필터링
-  const filteredPosts = displayPosts.filter((post) => {
-    const matchesFilter =
-      activeFilter === "전체" || post.category === activeFilter;
+  const displayPosts = posts.length > 0 ? posts : communityPosts;
 
-    const matchesSearch =
-      (post.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (post.content || "").toLowerCase().includes(searchTerm.toLowerCase());
+  const normalizedPosts = useMemo(() => {
+    return displayPosts.map((post, index) => ({
+      id: post.id ?? post.postId ?? index + 1,
+      category: post.category ?? "",
+      title: post.title ?? "",
+      content: post.content ?? post.preview ?? "",
+      author: post.author ?? post.userName ?? "익명",
+      date: post.date ?? post.createdAt ?? post.created_at ?? "",
+      comments: Number(post.comments ?? post.commentCount ?? 0),
+    }));
+  }, [displayPosts]);
+
+  const filteredPosts = useMemo(() => {
+    return normalizedPosts.filter((post) => {
+      const matchesFilter =
+        activeFilter === "전체" || post.category === activeFilter;
+
+      const matchesSearch =
+        (post.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (post.content || "").toLowerCase().includes(searchTerm.toLowerCase());
 
       return matchesFilter && matchesSearch;
     });
@@ -398,17 +413,16 @@ const CommunityList = ({ posts = dummyPosts }) => {
   const sortedPosts = useMemo(() => {
     const copied = [...filteredPosts];
 
-  // 정렬 로직 (최신순 / 인기순)
-  const sortedPosts = [...filteredPosts].sort((a, b) => {
-    if (sortType === "최신순") {
-      // 날짜 내림차순 정렬 (최신이 위로)
-      const dateA = new Date((a.createdAt || "").replace(/\./g, "-"));
-      const dateB = new Date((b.createdAt || "").replace(/\./g, "-"));
-      return dateB - dateA;
-    } else {
+    return copied.sort((a, b) => {
+      if (sortType === "최신순") {
+        const dateA = new Date(String(a.date || "").replace(/\./g, "-"));
+        const dateB = new Date(String(b.date || "").replace(/\./g, "-"));
+        return dateB - dateA;
+      }
+
       return (b.comments || 0) - (a.comments || 0);
-    }
-  });
+    });
+  }, [filteredPosts, sortType]);
 
   return (
     <>
@@ -481,9 +495,8 @@ const CommunityList = ({ posts = dummyPosts }) => {
             {sortedPosts.length > 0 ? (
               sortedPosts.map((post) => (
                 <PostCard
-                  key={post.postId}
-                  onClick={() => onPostClick(post)}
-                  style={{ cursor: `pointer` }}
+                  key={post.id}
+                  onClick={() => navigate(`/community/${post.id}`)}
                 >
                   <CategoryTag $type={post.category}>
                     {post.category}
@@ -491,15 +504,12 @@ const CommunityList = ({ posts = dummyPosts }) => {
 
                   <PostTitle>{post.title}</PostTitle>
 
-                  <PostPreviewText>
-                    {post.content || post.preview}
-                  </PostPreviewText>
+                  <PostPreviewText>{post.content}</PostPreviewText>
 
                   <PostMeta>
                     <AuthorDate>
                       <span>@{post.author}</span>
-
-                      <span>{post.createdAt}</span>
+                      <span>{post.date}</span>
                     </AuthorDate>
 
                     <CommentCount>
