@@ -412,6 +412,21 @@ const CommunityList = ({ onWriteClick, onPostClick, posts = [] }) => {
     return matchesFilter && matchesSearch;
   });
 
+  // 정렬 로직 (최신순 / 인기순)
+  const sortedPosts = [...filteredPosts].sort((a, b) => {
+    if (sortType === "최신순") {
+      // 날짜 내림차순 정렬 (최신이 위로)
+      return (
+        new Date(b.date.replace(/\./g, "-")) -
+        new Date(a.date.replace(/\./g, "-"))
+      );
+    } else if (sortType === "인기순") {
+      // 댓글 수 내림차순 정렬 (많은 것이 위로)
+      return b.comments - a.comments;
+    }
+    return 0;
+  });
+
   return (
     <>
       <GlobalStyle />
@@ -484,8 +499,8 @@ const CommunityList = ({ onWriteClick, onPostClick, posts = [] }) => {
           </FilterRow>
 
           <PostList>
-            {filteredPosts.length > 0 ? (
-              filteredPosts.map((post) => (
+            {sortedPosts.length > 0 ? (
+              sortedPosts.map((post) => (
                 <PostCard
                   key={post.id}
                   onClick={() => onPostClick(post)}
