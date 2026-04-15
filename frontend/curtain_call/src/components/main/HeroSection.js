@@ -38,20 +38,20 @@ const HeroSection = ({ heroList = [] }) => {
   return (
     <Section>
       <SliderTrack $currentIndex={currentIndex}>
-        {heroList.map((hero) => (
+        {heroList.map((hero, index) => (
           <Slide key={hero.musicalId} $bg={hero.posterUrl}>
             <DarkOverlay />
 
             <Content>
-              <RankBadge>🏆 1위</RankBadge>
+              <RankBadge>🏆 {index + 1}위</RankBadge>
 
               <Title>{hero.title}</Title>
 
               <RatingRow>
                 <StarsWrapper>
                   {getStarFillPercents(hero.rating).map(
-                    (fillPercent, index) => (
-                      <StarBox key={`${hero.musicalId}-star-${index}`}>
+                    (fillPercent, starIndex) => (
+                      <StarBox key={`${hero.musicalId}-star-${starIndex}`}>
                         <StarBase>★</StarBase>
                         <StarFill $fillPercent={fillPercent}>★</StarFill>
                       </StarBox>

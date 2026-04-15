@@ -1,38 +1,65 @@
+import { useMemo } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 const categoryStyleMap = {
-  공지사항: {
-    text: "#ffb84d",
-    bg: "rgba(255, 184, 77, 0.12)",
-    iconBg: "rgba(255, 184, 77, 0.18)",
-    icon: "📌",
+  "티켓 양도": {
+    text: "#F4B44F",
+    bg: "rgba(244, 180, 79, 0.14)",
+    iconBg: "rgba(244, 180, 79, 0.16)",
+    icon: "🎫",
   },
-  퇴근후기: {
-    text: "#3dd9c4",
-    bg: "rgba(61, 217, 196, 0.12)",
-    iconBg: "rgba(61, 217, 196, 0.18)",
+  "정보 공유": {
+    text: "#3DD9C4",
+    bg: "rgba(61, 217, 196, 0.14)",
+    iconBg: "rgba(61, 217, 196, 0.16)",
+    icon: "📢",
+  },
+  "공연 메이트": {
+    text: "#60A5FA",
+    bg: "rgba(96, 165, 250, 0.14)",
+    iconBg: "rgba(96, 165, 250, 0.16)",
+    icon: "🤝",
+  },
+  "토크 공간": {
+    text: "#A78BFA",
+    bg: "rgba(167, 139, 250, 0.14)",
+    iconBg: "rgba(167, 139, 250, 0.16)",
     icon: "💬",
   },
-  공연일기: {
-    text: "#f59e0b",
-    bg: "rgba(245, 158, 11, 0.12)",
-    iconBg: "rgba(245, 158, 11, 0.18)",
-    icon: "🔥",
+  공연후기: {
+    text: "#F59E0B",
+    bg: "rgba(245, 158, 11, 0.14)",
+    iconBg: "rgba(245, 158, 11, 0.16)",
+    icon: "⭐",
   },
-  "질문 글": {
-    text: "#8b5cf6",
-    bg: "rgba(139, 92, 246, 0.12)",
-    iconBg: "rgba(139, 92, 246, 0.18)",
-    icon: "📈",
+  "Q&A": {
+    text: "#F87171",
+    bg: "rgba(248, 113, 113, 0.14)",
+    iconBg: "rgba(248, 113, 113, 0.16)",
+    icon: "❓",
   },
 };
 
-const CommunityHotSection = ({ hotPosts }) => {
+const CommunityHotSection = ({ posts = [] }) => {
   const navigate = useNavigate();
+
+  const hotPosts = useMemo(() => {
+    return [...posts]
+      .sort((a, b) => {
+        const aCount = Number(a.commentCount || 0);
+        const bCount = Number(b.commentCount || 0);
+        return bCount - aCount;
+      })
+      .slice(0, 4);
+  }, [posts]);
 
   const handleMovePostDetail = (postId) => {
     navigate(`/community/${postId}`);
+  };
+
+  const handleMoveCommunityPage = () => {
+    navigate("/community");
   };
 
   return (
@@ -40,48 +67,56 @@ const CommunityHotSection = ({ hotPosts }) => {
       <SmallLabel>COMMUNITY</SmallLabel>
       <Title>커뮤니티 HOT 게시물</Title>
 
-      <Board>
-        <Grid>
-          {hotPosts.map((post) => {
-            const style = categoryStyleMap[post.category] || {
-              text: "#d8b24c",
-              bg: "rgba(216,178,76,0.12)",
-              iconBg: "rgba(216,178,76,0.18)",
-              icon: "•",
-            };
+      {posts.length === 0 ? (
+        <EmptyBox>아직 커뮤니티 게시글이 없습니다</EmptyBox>
+      ) : (
+        <>
+          <Board>
+            <Grid>
+              {hotPosts.map((post) => {
+                const style = categoryStyleMap[post.category] || {
+                  text: "#C9A84C",
+                  bg: "rgba(201, 168, 76, 0.14)",
+                  iconBg: "rgba(201, 168, 76, 0.16)",
+                  icon: "•",
+                };
 
-            return (
-              <PostItem key={post.postId}>
-                <LeftArea>
-                  <IconBox $iconBg={style.iconBg}>{style.icon}</IconBox>
+                return (
+                  <PostItem key={post.postId}>
+                    <LeftArea>
+                      <IconCircle $iconBg={style.iconBg}>
+                        <IconText>{style.icon}</IconText>
+                      </IconCircle>
 
-                  <PostTextArea>
-                    <CategoryPill $text={style.text} $bg={style.bg}>
-                      {post.category}
-                    </CategoryPill>
+                      <PostTextArea>
+                        <CategoryPill $text={style.text} $bg={style.bg}>
+                          {post.category}
+                        </CategoryPill>
 
-                    <PostTitle
-                      onClick={() => handleMovePostDetail(post.postId)}
-                    >
-                      {post.title}
-                    </PostTitle>
-                  </PostTextArea>
-                </LeftArea>
+                        <PostTitle
+                          onClick={() => handleMovePostDetail(post.postId)}
+                        >
+                          {post.title}
+                        </PostTitle>
+                      </PostTextArea>
+                    </LeftArea>
 
-                <MetaArea>
-                  <CommentMeta>💬 {post.commentCount}</CommentMeta>
-                </MetaArea>
-              </PostItem>
-            );
-          })}
-        </Grid>
-      </Board>
+                    <MetaArea>
+                      <CommentMeta>💬 {post.commentCount ?? 0}</CommentMeta>
+                    </MetaArea>
+                  </PostItem>
+                );
+              })}
+            </Grid>
+          </Board>
 
-      <ButtonRow>
-        <MoreButton onClick={() => navigate("/community")}>
-          커뮤니티 전체 게시물 보기 →
-        </MoreButton>
-      </ButtonRow>
+          <ButtonRow>
+            <MoreButton onClick={handleMoveCommunityPage}>
+              커뮤니티 전체 게시물 보기 →
+            </MoreButton>
+          </ButtonRow>
+        </>
+      )}
     </Section>
   );
 };
@@ -105,10 +140,20 @@ const Title = styled.h2`
   font-weight: 700;
 `;
 
+const EmptyBox = styled.div`
+  border: 1px solid #1d2330;
+  border-radius: 16px;
+  background: #0d0d14;
+  padding: 48px 20px;
+  text-align: center;
+  color: #7f8aa3;
+  font-size: 15px;
+`;
+
 const Board = styled.div`
   border: 1px solid #1d2330;
   border-radius: 16px;
-  background: #0a0f1c;
+  background: #0d0d14;
   padding: 12px;
 `;
 
@@ -140,15 +185,19 @@ const LeftArea = styled.div`
   gap: 12px;
 `;
 
-const IconBox = styled.div`
-  width: 28px;
-  height: 28px;
+const IconCircle = styled.div`
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  background: ${({ $iconBg }) => $iconBg};
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ $iconBg }) => $iconBg};
-  font-size: 13px;
+  flex-shrink: 0;
+`;
+
+const IconText = styled.span`
+  font-size: 14px;
 `;
 
 const PostTextArea = styled.div`
