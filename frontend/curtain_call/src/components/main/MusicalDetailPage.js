@@ -23,7 +23,7 @@ const MusicalDetailPage = () => {
     ageLimit: "8세 이상",
     crew: "로리 윌슨",
     status: "공연중",
-    castNames: ["양준모", "민우혁", "린", "이지혜"],
+    castNames: "양준모, 민우혁, 린, 이지혜",
     posterUrl: "https://images.unsplash.com/photo-1518998053901-5348d3961a04",
     introImages: [
       "https://images.unsplash.com/photo-1516280440614-37939bbacd81",
@@ -357,7 +357,7 @@ const MusicalDetailPage = () => {
 
               <InfoRow>
                 <InfoKey>출연</InfoKey>
-                <InfoData>{musicalDetail.castNames.join(", ")}</InfoData>
+                <InfoData>{musicalDetail.castName || "정보없음"}</InfoData>
               </InfoRow>
             </SectionCard>
 

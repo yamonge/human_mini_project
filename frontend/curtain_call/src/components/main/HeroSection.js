@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -6,11 +6,17 @@ const HeroSection = ({ heroList = [] }) => {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  if (!heroList.length) return null;
+  const rankedHeroList = useMemo(() => {
+    return [...heroList]
+      .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
+      .slice(0, 3);
+  }, [heroList]);
+
+  if (!rankedHeroList.length) return null;
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
-    return dateString.replaceAll("-", ".");
+    return String(dateString).replaceAll("-", ".");
   };
 
   const getStarFillPercents = (rating) => {
@@ -24,11 +30,15 @@ const HeroSection = ({ heroList = [] }) => {
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? heroList.length - 1 : prev - 1));
+    setCurrentIndex((prev) =>
+      prev === 0 ? rankedHeroList.length - 1 : prev - 1,
+    );
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === heroList.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) =>
+      prev === rankedHeroList.length - 1 ? 0 : prev + 1,
+    );
   };
 
   const handleMoveDetail = (musicalId) => {
@@ -38,7 +48,7 @@ const HeroSection = ({ heroList = [] }) => {
   return (
     <Section>
       <SliderTrack $currentIndex={currentIndex}>
-        {heroList.map((hero, index) => (
+        {rankedHeroList.map((hero, index) => (
           <Slide key={hero.musicalId} $bg={hero.posterUrl}>
             <DarkOverlay />
 
@@ -59,7 +69,7 @@ const HeroSection = ({ heroList = [] }) => {
                   )}
                 </StarsWrapper>
 
-                <Score>{hero.rating}</Score>
+                <Score>{Number(hero.rating || 0).toFixed(1)}</Score>
               </RatingRow>
 
               <Description>{hero.synopsis}</Description>
@@ -85,7 +95,7 @@ const HeroSection = ({ heroList = [] }) => {
       </ArrowGroup>
 
       <IndicatorRow>
-        {heroList.map((_, index) => (
+        {rankedHeroList.map((_, index) => (
           <Indicator
             key={index}
             $active={index === currentIndex}

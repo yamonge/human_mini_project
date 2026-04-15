@@ -29,3 +29,4 @@ yarn-error.log*
 /src/components/AtLayout.js
 /src/components/MainLayout.js
 /src/components/AuthLayout.js
+yarn.lock
