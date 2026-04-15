@@ -27,6 +27,7 @@ public class CastController {
             @Parameter(description = "뮤지컬 ID", example = "1") @PathVariable Long musicalId,
             @RequestBody CastReqDto dto) {
         // TODO: castService.saveCast() 구현 후 아래 주석 제거
+        // TODO: 현재 외부 API사용으로 작업X
         // return ResponseEntity.ok(ApiResponse.ok("출연진 등록 성공", castService.saveCast(musicalId, dto)));
         return ResponseEntity.ok(ApiResponse.fail("TODO: CastService.saveCast() 구현 필요"));
     }
@@ -36,6 +37,7 @@ public class CastController {
     public ResponseEntity<ApiResponse<List<CastResDto>>> getCastList(
             @Parameter(description = "뮤지컬 ID", example = "1") @PathVariable Long musicalId) {
         // TODO: castService.getCastList() 구현 후 아래 주석 제거
+        // TODO: 현재 뮤지컬엔티티에 String으로 저장중임으로 작업X
         // return ResponseEntity.ok(ApiResponse.ok("출연진 목록 조회 성공", castService.getCastList(musicalId)));
         return ResponseEntity.ok(ApiResponse.fail("TODO: CastService.getCastList() 구현 필요"));
     }
@@ -46,6 +48,7 @@ public class CastController {
             @PathVariable Long musicalId,
             @Parameter(description = "출연진 ID", example = "1") @PathVariable Long castId) {
         // TODO: castService.deleteCast() 구현 후 아래 주석 제거
+        // TODO: 현재 외부 API임으로 작업X
         // castService.deleteCast(castId);
         // return ResponseEntity.ok(ApiResponse.ok("출연진 삭제 성공"));
         return ResponseEntity.ok(ApiResponse.fail("TODO: CastService.deleteCast() 구현 필요"));

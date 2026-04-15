@@ -39,7 +39,9 @@ public class MusicalService {
     @Transactional(readOnly = true)
     public List<MusicalResDto> getMusicalList() {
         // TODO: findAll() 또는 정렬된 조회 메서드 사용
-        return null;
+        return musicalRepository.findAll().stream()
+                .map(MusicalResDto::from)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -49,7 +51,7 @@ public class MusicalService {
     @Transactional(readOnly = true)
     public MusicalResDto getMusical(Long musicalId) {
         // TODO: findById() 사용, 없으면 IllegalArgumentException 발생
-        return null;
+        return MusicalResDto.from(findMusicalById(musicalId));
     }
 
     /**
@@ -59,6 +61,7 @@ public class MusicalService {
     @Transactional(readOnly = true)
     public List<MusicalResDto> getMusicalListByStatus(MusicalStatus status) {
         // TODO: findByStatusOrderByStartDateAsc() 사용
+        // TODO: 공연 상태별 조회 같은 필터링은 프론트가 맞을것임으로 작업X
         return null;
     }
 
@@ -69,7 +72,9 @@ public class MusicalService {
     @Transactional(readOnly = true)
     public List<MusicalResDto> searchMusical(String keyword) {
         // TODO: findByTitleContainingOrderByCreatedAtDesc() 사용
-        return null;
+        return musicalRepository.findByTitleContainingOrderByCreatedAtDesc(keyword).stream()
+                .map(MusicalResDto::from)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -78,6 +83,7 @@ public class MusicalService {
      */
     public MusicalResDto updateMusical(Long musicalId, MusicalReqDto dto) {
         // TODO: findById() → 필드 업데이트 → save() → MusicalResDto 반환
+        // TODO: 외부 API 임으로 뮤지컬 수정은 없음으로 작업X
         return null;
     }
 
@@ -87,6 +93,7 @@ public class MusicalService {
      */
     public void deleteMusical(Long musicalId) {
         // TODO: findById() → delete()
+        // TODO: 외부 API 임으로 뮤지컬 삭제는 없음으로 작업X
     }
 
     // 공통 조회 메서드 - 아래 코드는 완성되어 있어요! 참고해서 위 TODO를 채우세요.

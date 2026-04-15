@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export const musicalMockData = [
   {
@@ -350,6 +352,8 @@ const PageButton = styled.button`
 `;
 
 const MusicalItem = ({ data }) => {
+  const navigate = useNavigate();
+
   const calculateDday = (startDate) => {
     const normalizedStartDate = String(startDate).replaceAll(".", "-");
     const today = new Date();
@@ -375,7 +379,10 @@ const MusicalItem = ({ data }) => {
   const style = getStatusStyle(data.status);
 
   return (
-    <ItemCard>
+    <ItemCard
+      onClick={() => navigate(`/musicals/${data.musicalId}`)}
+      style={{ cursor: "pointer" }}
+    >
       <Poster src={data.posterUrl} alt={data.title} />
       <Info>
         <div className="top-row">
@@ -399,11 +406,12 @@ const MusicalItem = ({ data }) => {
           </div>
           <div>
             <span className="label">기간</span>
-            {data.startDate} ~ {data.endDate}
+            {String(data.startDate).replaceAll("-", ".")} ~{" "}
+            {String(data.endDate).replaceAll("-", ".")}
           </div>
           <div>
             <span className="label">출연</span>
-            {data.castName || "정보없음"}
+            {data.castName || data.castNames || "정보없음"}
           </div>
         </div>
       </Info>
@@ -412,8 +420,13 @@ const MusicalItem = ({ data }) => {
 };
 
 const MusicalListPage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  const location = useLocation();
+  const initialTab = location.state?.selectedTab || "전체";
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterStatus, setFilterStatus] = useState("전체");
+  const [filterStatus, setFilterStatus] = useState(initialTab);
   const itemPerPage = 6;
   const [sortBy, setSortBy] = useState("평점순");
   const [searchTerm, setSearchTerm] = useState("");
