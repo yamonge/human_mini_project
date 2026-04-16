@@ -19,84 +19,100 @@ import {
 const FindAccount = () => {
   const location = useLocation();
 
+  // 현재 활성화된 탭 상태 ('id' 또는 'password'), URL state에서 가져오거나 기본값 'id'
   const [activeTab, setActiveTab] = useState(location.state?.tab || "id");
 
-  // 아이디
-  const [idName, setIdName] = useState("");
-  const [idBirth, setIdBirth] = useState("");
+  // 아이디 찾기 탭에서 사용할 사용자 이름 상태
+  const [id_name, setId_name] = useState("");
+  // 아이디 찾기 탭에서 사용할 사용자 생년월일 상태
+  const [birth_date, setBirth_date] = useState("");
 
-  // 비밀번호
-  const [pwName, setPwName] = useState("");
-  const [pwEmail, setPwEmail] = useState("");
+  // 비밀번호 찾기 탭에서 사용할 사용자 이름 상태
+  const [pw_name, setPw_name] = useState("");
+  // 비밀번호 찾기 탭에서 사용할 사용자 이메일 상태
+  const [email, setEmail] = useState("");
 
+  // 페이지 이동을 위한 useNavigate 훅 사용
   const navigate = useNavigate();
 
-  // validation
-  const validateName = (v) => v.length >= 2;
-  const validateEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  const validateBirth = (v) => /^\d{4}-\d{2}-\d{2}$/.test(v);
+  // 이름 유효성 검사 함수 (2자 이상)
+  const validateName = (value) => value.length >= 2;
+  // 이메일 유효성 검사 함수
+  const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  // 생년월일 유효성 검사 함수 (YYYY-MM-DD 형식)
+  const validateBirth_date = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value);
 
-  // ✅ 탭 변경 (초기화 포함)
+  // ✅ 탭 변경 핸들러 (입력 필드 초기화 포함)
   const handleTabChange = (tab) => {
     setActiveTab(tab);
 
-    // 전부 초기화
-    setIdName("");
-    setIdBirth("");
-    setPwName("");
-    setPwEmail("");
+    // 탭 변경 시 모든 입력 필드 초기화
+    setId_name("");
+    setBirth_date("");
+    setPw_name("");
+    setEmail("");
   };
 
-  // ✅ 아이디 찾기
+  // ✅ 아이디 찾기 폼 제출 핸들러
   const handleFindId = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // 기본 폼 제출 동작 방지
 
     // 1. 빈값 체크
-    if (!idName || !idBirth) {
+    if (!id_name || !birth_date) {
       alert("모든 항목을 입력해주세요");
       return;
     }
     // 2. 형식 체크
-    if (!validateName(idName) || !validateBirth(idBirth)) {
+    if (!validateName(id_name) || !validateBirth_date(birth_date)) {
       alert("입력 형식을 확인해주세요");
       return;
     }
 
-    // 3. 정상
+    // 3. 정상적인 경우 (실제로는 서버 통신 필요)
+    // 50% 확률로 성공 또는 실패 시뮬레이션
     const success = Math.random() > 0.5;
 
+    // 아이디 찾기 결과 페이지로 이동하며 성공 여부 전달
     navigate("/id-result", {
       state: { isSuccess: success },
     });
   };
 
-  // ✅ 비밀번호 찾기
+  // ✅ 비밀번호 찾기 폼 제출 핸들러
   const handleFindPw = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // 기본 폼 제출 동작 방지
 
-    if (validateName(pwName) && validateEmail(pwEmail)) {
-      const success = Math.random() > 0.5; // 50%
+    // 이름과 이메일 모두 유효한 경우
+    if (validateName(pw_name) && validateEmail(email)) {
+      const success = Math.random() > 0.5; // 50% 확률로 성공 또는 실패 시뮬레이션
 
+      // 비밀번호 찾기 결과 페이지로 이동하며 성공 여부 전달
       navigate("/password-result", {
         state: { isSuccess: success },
       });
+    } else {
+      alert("입력 형식을 확인해주세요."); // 유효성 검사 실패 시 알림
     }
   };
 
   return (
     <LoginContainer>
       <Header>
+        {/* 현재 활성화된 탭에 따라 제목 변경 */}
         <Title>{activeTab === "id" ? "아이디 찾기" : "비밀번호 찾기"}</Title>
+        {/* 닫기 버튼 클릭 시 로그인 페이지로 이동 */}
         <CloseButton onClick={() => navigate("/login")}>&times;</CloseButton>
       </Header>
 
       <TabContainer>
+        {/* 아이디 찾기 탭 버튼 */}
         <TabButton
           active={activeTab === "id"}
           onClick={() => handleTabChange("id")}
         >
           아이디 찾기
         </TabButton>
+        {/* 비밀번호 찾기 탭 버튼 */}
         <TabButton
           active={activeTab === "password"}
           onClick={() => handleTabChange("password")}
@@ -105,7 +121,7 @@ const FindAccount = () => {
         </TabButton>
       </TabContainer>
 
-      {/* 아이디 찾기 */}
+      {/* 아이디 찾기 폼 (activeTab이 'id'일 때만 렌더링) */}
       {activeTab === "id" && (
         <FindForm onSubmit={handleFindId}>
           <FormDescription>이름과 생년월일을 입력해주세요</FormDescription>
@@ -113,12 +129,12 @@ const FindAccount = () => {
           <InputGroup>
             <Label>이름</Label>
             <FindInput
-              value={idName}
-              onChange={(e) => setIdName(e.target.value)}
+              value={id_name} // id_name 상태와 바인딩
+              onChange={(e) => setId_name(e.target.value)} // 변경 핸들러
               validationStatus={
-                idName === ""
+                id_name === ""
                   ? null
-                  : validateName(idName)
+                  : validateName(id_name)
                     ? "valid"
                     : "invalid"
               }
@@ -126,16 +142,16 @@ const FindAccount = () => {
             />
             <ErrorMessage
               color={
-                idName === ""
+                id_name === ""
                   ? "transparent"
-                  : validateName(idName)
+                  : validateName(id_name)
                     ? "green"
                     : "red"
               }
             >
-              {idName === ""
+              {id_name === ""
                 ? ""
-                : validateName(idName)
+                : validateName(id_name)
                   ? "올바른 이름입니다"
                   : "이름은 2자 이상 입력해주세요"}
             </ErrorMessage>
@@ -145,28 +161,28 @@ const FindAccount = () => {
             <Label>생년월일</Label>
             <FindInput
               type="date"
-              value={idBirth}
-              onChange={(e) => setIdBirth(e.target.value)}
+              value={birth_date} // birth_date 상태와 바인딩
+              onChange={(e) => setBirth_date(e.target.value)} // 변경 핸들러
               validationStatus={
-                idBirth === ""
+                birth_date === ""
                   ? null
-                  : validateBirth(idBirth)
+                  : validateBirth_date(birth_date)
                     ? "valid"
                     : "invalid"
               }
             />
             <ErrorMessage
               color={
-                idBirth === ""
+                birth_date === ""
                   ? "transparent"
-                  : validateBirth(idBirth)
+                  : validateBirth_date(birth_date)
                     ? "green"
                     : "red"
               }
             >
-              {idBirth === ""
+              {birth_date === ""
                 ? ""
-                : validateBirth(idBirth)
+                : validateBirth_date(birth_date)
                   ? "올바른 형식입니다"
                   : "YYYY-MM-DD 형식으로 입력해주세요"}
             </ErrorMessage>
@@ -176,7 +192,7 @@ const FindAccount = () => {
         </FindForm>
       )}
 
-      {/* 비밀번호 찾기 */}
+      {/* 비밀번호 찾기 폼 (activeTab이 'password'일 때만 렌더링) */}
       {activeTab === "password" && (
         <FindForm onSubmit={handleFindPw}>
           <FormDescription>이름과 이메일을 입력해주세요</FormDescription>
@@ -184,12 +200,12 @@ const FindAccount = () => {
           <InputGroup>
             <Label>이름</Label>
             <FindInput
-              value={pwName}
-              onChange={(e) => setPwName(e.target.value)}
+              value={pw_name} // pw_name 상태와 바인딩
+              onChange={(e) => setPw_name(e.target.value)} // 변경 핸들러
               validationStatus={
-                pwName === ""
+                pw_name === ""
                   ? null
-                  : validateName(pwName)
+                  : validateName(pw_name)
                     ? "valid"
                     : "invalid"
               }
@@ -197,16 +213,16 @@ const FindAccount = () => {
             />
             <ErrorMessage
               color={
-                pwName === ""
+                pw_name === ""
                   ? "transparent"
-                  : validateName(pwName)
+                  : validateName(pw_name)
                     ? "green"
                     : "red"
               }
             >
-              {pwName === ""
+              {pw_name === ""
                 ? ""
-                : validateName(pwName)
+                : validateName(pw_name)
                   ? "올바른 이름입니다"
                   : "이름은 2자 이상 입력해주세요"}
             </ErrorMessage>
@@ -215,29 +231,25 @@ const FindAccount = () => {
           <InputGroup>
             <Label>이메일</Label>
             <FindInput
-              value={pwEmail}
-              onChange={(e) => setPwEmail(e.target.value)}
+              value={email} // email 상태와 바인딩
+              onChange={(e) => setEmail(e.target.value)} // 변경 핸들러
               validationStatus={
-                pwEmail === ""
-                  ? null
-                  : validateEmail(pwEmail)
-                    ? "valid"
-                    : "invalid"
+                email === "" ? null : validateEmail(email) ? "valid" : "invalid"
               }
               placeholder="이메일을 입력해주세요"
             />
             <ErrorMessage
               color={
-                pwEmail === ""
+                email === ""
                   ? "transparent"
-                  : validateEmail(pwEmail)
+                  : validateEmail(email)
                     ? "green"
                     : "red"
               }
             >
-              {pwEmail === ""
+              {email === ""
                 ? ""
-                : validateEmail(pwEmail)
+                : validateEmail(email)
                   ? "올바른 이메일입니다"
                   : "이메일 형식이 아닙니다"}
             </ErrorMessage>

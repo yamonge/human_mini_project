@@ -1,6 +1,6 @@
-// LoginCss.js 내용은 동일합니다.
 import styled, { css } from "styled-components";
 
+// 로그인/회원가입 컨테이너 스타일 정의
 export const LoginContainer = styled.div`
   width: 420px;
   background-color: #111118;
@@ -13,21 +13,25 @@ export const LoginContainer = styled.div`
   margin: auto;
 `;
 
+// 헤더 스타일 정의
 export const Header = styled.div`
   margin-bottom: 20px;
 `;
 
+// 제목 스타일 정의
 export const Title = styled.h2`
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 8px;
 `;
 
+// 부제목 스타일 정의
 export const Subtitle = styled.p`
   font-size: 14px;
   color: #c9a84c;
 `;
 
+// 닫기 버튼 스타일 정의
 export const CloseButton = styled.button`
   position: absolute;
   top: 20px;
@@ -41,16 +45,19 @@ export const CloseButton = styled.button`
   line-height: 1;
 `;
 
+// 로그인/회원가입 폼 스타일 정의
 export const LoginForm = styled.form`
   display: flex;
   flex-direction: column;
 `;
 
+// 입력 그룹 스타일 정의 (레이블과 입력 필드를 묶음)
 export const InputGroup = styled.div`
   margin-bottom: 20px;
   position: relative;
 `;
 
+// 레이블 스타일 정의
 export const Label = styled.label`
   display: block;
   font-size: 14px;
@@ -58,6 +65,7 @@ export const Label = styled.label`
   color: #ccc;
 `;
 
+// 로그인/회원가입 입력 필드 스타일 정의
 export const LoginInput = styled.input`
   width: 100%;
   padding: 12px 15px;
@@ -74,6 +82,13 @@ export const LoginInput = styled.input`
     border-color: #d4af37;
   }
 
+  // 웹킷 기반 브라우저 자동 완성 스타일 재정의
+  &:-webkit-autofill {
+    -webkit-text-fill-color: #f0f0f0 !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  // 유효성 검사 상태에 따른 테두리 색상 변경
   ${(props) =>
     props.validationStatus === "valid" &&
     css`
@@ -87,6 +102,7 @@ export const LoginInput = styled.input`
     `}
 `;
 
+// 비밀번호 찾기 링크 스타일 정의 (현재 사용되지 않지만 정의되어 있음)
 export const FindPasswordLink = styled.a`
   position: absolute;
   right: 0;
@@ -99,14 +115,16 @@ export const FindPasswordLink = styled.a`
   }
 `;
 
+// 에러 메시지 스타일 정의
 export const ErrorMessage = styled.p`
   font-size: 12px;
   position: absolute;
   bottom: -33px;
   right: 0;
-  color: ${(props) => props.color || "red"};
+  color: ${(props) => props.color || "red"}; // props.color가 없으면 기본값 red
 `;
 
+// 버튼 스타일 정의
 export const Button = styled.button`
   width: 100%;
   padding: 14px;
@@ -118,6 +136,7 @@ export const Button = styled.button`
     border-color 0.3s ease;
   margin-top: 10px;
 
+  // outline 속성에 따른 조건부 스타일 적용
   ${(props) =>
     props.outline
       ? css`
@@ -139,6 +158,7 @@ export const Button = styled.button`
         `}
 `;
 
+// 구분선 ("또는") 스타일 정의
 export const OrDivider = styled.div`
   text-align: center;
   margin: 20px 0;
@@ -146,6 +166,7 @@ export const OrDivider = styled.div`
   color: #888;
   position: relative;
 
+  // 구분선 양쪽의 가로선 스타일 정의
   &::before,
   &::after {
     content: "";
@@ -165,12 +186,14 @@ export const OrDivider = styled.div`
   }
 `;
 
+// 소셜 로그인 버튼 그룹 스타일 정의
 export const SocialLoginGroup = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 15px;
 `;
 
+// 소셜 로그인 버튼 개별 스타일 정의
 export const SocialButton = styled.button`
   flex: 1;
   display: flex;
