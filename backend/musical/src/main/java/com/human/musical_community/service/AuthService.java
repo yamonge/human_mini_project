@@ -39,7 +39,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(dto.getPassword()))  // BCrypt 암호화
                 .name(dto.getName())
                 .birthDate(dto.getBirthDate())
-                .isAdmin(false)
+                .isAdmin(0)
                 .build();
 
         userRepository.save(user);
@@ -53,6 +53,8 @@ public class AuthService {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
 
+        System.out.println("service : " + user);
+
         // BCrypt 비밀번호 검증
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
@@ -65,7 +67,7 @@ public class AuthService {
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .isAdmin(user.isAdmin())
+                .isAdmin(user.getIsAdmin() == 1)
                 .build();
     }
 

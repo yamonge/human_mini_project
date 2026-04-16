@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import Pagination from "../common/Pagination";
+import AxiosApi from "../../api/AxiosApi";
 
 const REVIEW_PAGE_SIZE = 5;
 
@@ -9,29 +10,7 @@ const MusicalDetailPage = () => {
   const { musicalId } = useParams();
   const navigate = useNavigate();
 
-  const [musicalDetail] = useState({
-    musicalId: Number(musicalId),
-    title: "레 미제라블",
-    synopsis:
-      "빅토르 위고의 불멸의 명작이 무대 위에서 살아 숨쉽니다. 혁명과 사랑, 용서와 구원의 대서사시. 19세기 프랑스를 배경으로 장 발장의 일생을 통해 인간의 존엄성과 희망을 노래한 작품으로, 전 세계 49개국에서 1억 3천만 명 이상이 관람한 뮤지컬 역사상 최고의 걸작.",
-    rating: 9.8,
-    reviewCount: 1772,
-    startDate: "2026-03-15",
-    endDate: "2026-07-30",
-    venue: "블루스퀘어 신한카드홀",
-    runtime: "2시간 55분",
-    ageLimit: "8세 이상",
-    crew: "로리 윌슨",
-    status: "공연중",
-    castNames: "양준모, 민우혁, 린, 이지혜",
-    posterUrl: "https://images.unsplash.com/photo-1518998053901-5348d3961a04",
-    introImages: [
-      "https://images.unsplash.com/photo-1516280440614-37939bbacd81",
-      "https://images.unsplash.com/photo-1511578314322-379afb476865",
-      "https://images.unsplash.com/photo-1506157786151-b8491531f063",
-    ],
-    address: "서울 용산구 이태원로 294",
-  });
+  const [musicalDetail, setMusicalDetail] = useState({});
 
   const [selectedRating, setSelectedRating] = useState(0);
   const [reviewContent, setReviewContent] = useState("");
@@ -42,137 +21,29 @@ const MusicalDetailPage = () => {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const sortRef = useRef(null);
 
-  const [totalRatingSum, setTotalRatingSum] = useState(
-    musicalDetail.rating * musicalDetail.reviewCount,
-  );
-
-  const [reviews, setReviews] = useState([
-    {
-      reviewId: 1,
-      userName: "오케스트라팬",
-      rating: 10,
-      content: "라이브 오케스트라 퀄리티 대박",
-      detail:
-        "이번 시즌 오케스트라 편성이 정말 탄탄해요. 음향이 좌석 전체에 고르게 퍼지고 배우들 목소리와의 밸런스도 완벽합니다.",
-      createdAt: "2026-04-10T09:10:00",
-    },
-    {
-      reviewId: 2,
-      userName: "무대매니아",
-      rating: 8,
-      content: "주연 배우 연기 미쳤다",
-      detail:
-        "특히 2막 마지막 넘버에서 눈물이 터졌습니다. 이번 시즌 최고의 무대라고 생각해요.",
-      createdAt: "2026-04-10T12:30:00",
-    },
-    {
-      reviewId: 3,
-      userName: "극장러버",
-      rating: 10,
-      content: "첫 관람 후기",
-      detail:
-        "뮤지컬 자주 보는 편인데 이 작품은 정말 최고였습니다. 음악, 연기, 무대 모두 다 완벽했어요.",
-      createdAt: "2026-04-11T14:05:00",
-    },
-    {
-      reviewId: 4,
-      userName: "현장파",
-      rating: 8,
-      content: "무대 연출이 인상적이에요",
-      detail: "무대 전환이 빠르고 조명 연출이 정말 좋았습니다.",
-      createdAt: "2026-04-11T15:00:00",
-    },
-    {
-      reviewId: 5,
-      userName: "넘버덕후",
-      rating: 10,
-      content: "대표 넘버가 너무 좋아요",
-      detail: "주요 넘버들이 하나같이 인상적이고 귀에 남아요.",
-      createdAt: "2026-04-12T16:15:00",
-    },
-    {
-      reviewId: 6,
-      userName: "공연초보",
-      rating: 6,
-      content: "첫 뮤지컬인데 괜찮았어요",
-      detail: "조금 길긴 했지만 전체적으로 몰입감 있었습니다.",
-      createdAt: "2026-04-12T17:20:00",
-    },
-    {
-      reviewId: 7,
-      userName: "관극러버",
-      rating: 10,
-      content: "재관람 의사 있음",
-      detail: "캐스팅이 좋아서 다른 배우 조합으로도 보고 싶네요.",
-      createdAt: "2026-04-12T18:10:00",
-    },
-    {
-      reviewId: 8,
-      userName: "무대조명팬",
-      rating: 8,
-      content: "조명과 무대미술이 훌륭",
-      detail: "시각적으로 굉장히 완성도가 높았습니다.",
-      createdAt: "2026-04-13T19:25:00",
-    },
-    {
-      reviewId: 9,
-      userName: "사운드체크",
-      rating: 10,
-      content: "음향 밸런스 최고",
-      detail: "대사와 노래 전달력이 정말 좋았어요.",
-      createdAt: "2026-04-13T20:10:00",
-    },
-    {
-      reviewId: 10,
-      userName: "뮤덕1",
-      rating: 8,
-      content: "배우 합이 좋았어요",
-      detail: "앙상블까지 포함해서 전체적인 조화가 좋았습니다.",
-      createdAt: "2026-04-13T21:00:00",
-    },
-    {
-      reviewId: 11,
-      userName: "뮤덕2",
-      rating: 10,
-      content: "감정선이 진짜 좋음",
-      detail: "특히 후반부 감정선이 정말 좋았습니다.",
-      createdAt: "2026-04-13T22:20:00",
-    },
-    {
-      reviewId: 12,
-      userName: "뮤덕3",
-      rating: 6,
-      content: "호불호는 있을 듯",
-      detail: "작품 길이가 길어서 취향은 탈 수 있겠어요.",
-      createdAt: "2026-04-13T23:05:00",
-    },
-    {
-      reviewId: 13,
-      userName: "뮤덕4",
-      rating: 10,
-      content: "명작은 명작",
-      detail: "스토리, 배우, 음악 다 만족스러웠습니다.",
-      createdAt: "2026-04-14T00:00:00",
-    },
-    {
-      reviewId: 14,
-      userName: "뮤덕5",
-      rating: 8,
-      content: "전반적으로 좋았습니다",
-      detail: "무난하게 만족하고 나왔습니다.",
-      createdAt: "2026-04-14T00:40:00",
-    },
-    {
-      reviewId: 15,
-      userName: "뮤덕6",
-      rating: 10,
-      content: "다시 보고 싶네요",
-      detail: "한 번 더 보면 더 깊게 보일 것 같아요.",
-      createdAt: "2026-04-14T01:30:00",
-    },
-  ]);
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
+    const fetchMusicalDetail = async () => {
+      try {
+        const response = await AxiosApi.getMusical(musicalId);
+        setMusicalDetail(response.data);
+      } catch (error) {
+        console.error("뮤지컬 상세 정보 조회 실패:", error);
+      }
+
+      try {
+        const response = await AxiosApi.getReviewList(musicalId);
+        setReviews(response.data);
+      } catch (error) {
+        console.error("리뷰 목록 조회 실패:", error);
+      }
+
+      setReviewCount(reviews.length);
+    };
+
+    fetchMusicalDetail();
+
     const handleClickOutside = (event) => {
       if (sortRef.current && !sortRef.current.contains(event.target)) {
         setIsSortOpen(false);
@@ -186,10 +57,6 @@ const MusicalDetailPage = () => {
   }, []);
 
   const isSubmitEnabled = selectedRating > 0 && reviewContent.trim().length > 0;
-
-  const averageRating = useMemo(() => {
-    return (totalRatingSum / reviewCount).toFixed(1);
-  }, [totalRatingSum, reviewCount]);
 
   const sortedReviews = useMemo(() => {
     const copiedReviews = [...reviews];
@@ -239,7 +106,6 @@ const MusicalDetailPage = () => {
     setReviewContent("");
     setSelectedRating(0);
     setReviewCount((prev) => prev + 1);
-    setTotalRatingSum((prev) => prev + selectedRating);
     setSortType("latest");
     setCurrentReviewPage(1);
     setIsSortOpen(false);
@@ -307,7 +173,7 @@ const MusicalDetailPage = () => {
 
             <RatingSummary>
               <RatingStars>
-                {getStarFillPercents(averageRating).map(
+                {getStarFillPercents(musicalDetail.rating).map(
                   (fillPercent, index) => (
                     <StarBox key={`avg-star-${index}`}>
                       <StarBase>★</StarBase>
@@ -317,7 +183,7 @@ const MusicalDetailPage = () => {
                 )}
               </RatingStars>
               <RatingText>
-                {averageRating} ({reviewCount})
+                {musicalDetail.rating} ({reviewCount})
               </RatingText>
             </RatingSummary>
 
@@ -366,7 +232,7 @@ const MusicalDetailPage = () => {
 
               <InfoRow>
                 <InfoKey>출연</InfoKey>
-                <InfoData>{musicalDetail.castName || "정보없음"}</InfoData>
+                <InfoData>{musicalDetail.casts || "정보없음"}</InfoData>
               </InfoRow>
             </SectionCard>
 
@@ -376,17 +242,20 @@ const MusicalDetailPage = () => {
             </SectionCard>
 
             <SectionCard>
-              <SectionTitle>
-                소개이미지 ({musicalDetail.introImages.length})
-              </SectionTitle>
+              <SectionTitle>소개이미지</SectionTitle>
               <IntroImageRow>
-                {musicalDetail.introImages.map((image, index) => (
-                  <IntroImage
-                    key={index}
-                    src={image}
-                    alt={`소개이미지-${index + 1}`}
-                  />
-                ))}
+                {musicalDetail.introImg1 && (
+                  <IntroImage src={musicalDetail.introImg1} alt="소개이미지" />
+                )}
+                {musicalDetail.introImg2 && (
+                  <IntroImage src={musicalDetail.introImg2} alt="소개이미지" />
+                )}
+                {musicalDetail.introImg3 && (
+                  <IntroImage src={musicalDetail.introImg3} alt="소개이미지" />
+                )}
+                {musicalDetail.introImg4 && (
+                  <IntroImage src={musicalDetail.introImg4} alt="소개이미지" />
+                )}
               </IntroImageRow>
             </SectionCard>
 

@@ -56,6 +56,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResDto>> login(@RequestBody LoginReqDto dto) {
         LoginResDto loginRes = authService.login(dto);
+        System.out.println("controller: " + loginRes);
         return ResponseEntity.ok(ApiResponse.ok("로그인 성공", loginRes));
     }
 

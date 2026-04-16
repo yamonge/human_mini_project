@@ -112,16 +112,16 @@ public class KopisService {
         }
     }
 
-    @PostConstruct
-    public void init() {
-        try {
-            log.info("===== 서버 시작 - KOPIS 초기 데이터 동기화 =====");
-            fetchAndSaveMusicals();
-            log.info("===== KOPIS 초기 데이터 동기화 완료 =====");
-        } catch (Exception e) {
-            log.error("초기 동기화 실패 (서버는 정상 시작): {}", e.getMessage());
-        }
-    }
+//    @PostConstruct
+//    public void init() {
+//        try {
+//            log.info("===== 서버 시작 - KOPIS 초기 데이터 동기화 =====");
+//            fetchAndSaveMusicals();
+//            log.info("===== KOPIS 초기 데이터 동기화 완료 =====");
+//        } catch (Exception e) {
+//            log.error("초기 동기화 실패 (서버는 정상 시작): {}", e.getMessage());
+//        }
+//    }
     @Scheduled(cron = "0 0 13 * * *")
 
     public void scheduleFetch() {

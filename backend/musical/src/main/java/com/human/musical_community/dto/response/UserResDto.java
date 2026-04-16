@@ -22,7 +22,7 @@ public class UserResDto {
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .isAdmin(user.isAdmin())
+                .isAdmin(user.getIsAdmin() == 1)
                 .birthDate(user.getBirthDate())
                 .createdAt(user.getCreatedAt())
                 .build();

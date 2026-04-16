@@ -7,7 +7,7 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #000; /* 전체 배경색 */
+  min-width: 1000px;
 `;
 
 // 이미지의 모달처럼 생긴 카드 박스
@@ -85,7 +85,7 @@ export const InfoBox = styled.div`
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  padding: 18px 24px;
+  padding: 10px 24px;
   margin-bottom: 12px;
   box-sizing: border-box;
 `;

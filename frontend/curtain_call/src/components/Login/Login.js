@@ -17,6 +17,7 @@ import {
   OrDivider,
 } from "../Login/LoginCss";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import AxiosApi from "../../api/AxiosApi";
 
 const Login = () => {
   // 사용자 이메일 상태 변수
@@ -69,7 +70,7 @@ const Login = () => {
   };
 
   // 로그인 폼 제출 핸들러
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // 기본 폼 제출 동작 방지
 
     // 1. 빈값 체크 및 형식 체크
@@ -78,29 +79,14 @@ const Login = () => {
       return;
     }
 
-    // 3. 테스트용 50% 로그인 성공 시뮬레이션
-    const success = Math.random() > 0.5;
-
-    if (success) {
-      // [수정된 부분] 회원가입 때 저장했던 정보를 가져옴
-      const registeredUser = JSON.parse(localStorage.getItem("registeredUser"));
-
-      let name = ""; // 사용자 이름 변수
-
-      // 만약 회원가입했던 이메일과 지금 로그인하려는 이메일이 같다면 가입한 이름을 사용
-      if (registeredUser && registeredUser.email === email) {
-        name = registeredUser.name;
-      } else {
-        // 회원가입 기록이 없거나 다른 이메일이면 이메일 앞자리 사용(예외처리)
-        name = email.split("@")[0];
-      }
-
-      // 최종적으로 Header.js가 읽어갈 'user' 정보 생성
+    const response = await AxiosApi.login({ email, password });
+    // 최종적으로 Header.js가 읽어갈 'user' 정보 생성
+    if (response.success) {
       const userData = {
-        name: name,
-        email: email,
-        userId: 1, // 임시 userId
-        isAdmin: true, // 임시 isAdmin
+        name: response.data.name,
+        email: response.data.email,
+        userId: response.data.userId, // 임시 userId
+        isAdmin: response.data.admin, // 임시 isAdmin
       };
 
       // localStorage에 사용자 정보 저장
@@ -109,7 +95,8 @@ const Login = () => {
       alert(`${userData.name}님 환영합니다!`);
       window.location.href = "/"; // 메인으로 이동하면서 헤더 갱신
     } else {
-      alert("아이디 또는 비밀번호가 틀렸습니다.");
+      alert(response);
+      return;
     }
   };
 
