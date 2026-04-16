@@ -535,8 +535,15 @@ const CommunityList = ({ posts = communityPosts }) => {
                     <AuthorDate>
                       <span>@{post.author}</span>
                       <span>
-                        {post.rawDate.split(" ")[0]} (
-                        {formatRelativeTime(post.rawDate)})
+                        {formatRelativeTime(post.rawDate).includes("전") ||
+                        formatRelativeTime(post.rawDate) === "방금 전" ? (
+                          <>
+                            {post.rawDate.split(" ")[0]} (
+                            {formatRelativeTime(post.rawDate)})
+                          </>
+                        ) : (
+                          <>{formatRelativeTime(post.rawDate)}</>
+                        )}
                       </span>
                     </AuthorDate>
 
