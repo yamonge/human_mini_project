@@ -1,10 +1,10 @@
 // Header.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import * as S from "./HeaderCss";
 import { Search, ChevronDown, LogOut } from "lucide-react";
 import logo from "../img/logo.png";
+import { musicalMockData } from "../PRO/MusicalList";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -32,6 +32,32 @@ const Header = () => {
     setUserInfo(null); // user_info 상태를 null로 설정
     setIsMenuOpen(false); // 메뉴 닫기
     navigate("/"); // 홈페이지로 이동
+  };
+
+  const handleSearch = () => {
+    const keyword = searchKeyword.trim().toLowerCase();
+
+    if (!keyword) return;
+
+    const matchedMusical = musicalMockData.find((musical) =>
+      String(musical.title || "")
+        .toLowerCase()
+        .includes(keyword),
+    );
+
+    if (matchedMusical) {
+      navigate(`/musicals/${matchedMusical.musicalId}`);
+      setSearchKeyword("");
+      return;
+    }
+
+    alert("일치하는 뮤지컬을 찾을 수 없습니다.");
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   return (

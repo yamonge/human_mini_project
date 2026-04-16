@@ -22,12 +22,7 @@ const categoryStyleMap = {
     iconBg: "rgba(96, 165, 250, 0.16)",
     icon: "🤝",
   },
-  "공연 메이트": {
-    text: "#60A5FA",
-    bg: "rgba(96, 165, 250, 0.14)",
-    iconBg: "rgba(96, 165, 250, 0.16)",
-    icon: "🤝",
-  },
+
   "토크 공간": {
     text: "#A78BFA",
     bg: "rgba(167, 139, 250, 0.14)",

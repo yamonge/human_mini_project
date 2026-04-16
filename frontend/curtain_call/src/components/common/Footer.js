@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import logoImg from "../img/logo.png";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -10,9 +11,9 @@ const Footer = () => {
     });
   };
 
-  const handleMoveCommunityCategory = (category) => {
+  const handleMoveCommunityTab = (tab) => {
     navigate("/community", {
-      state: { selectedCategory: category },
+      state: { selectedCategory: tab },
     });
   };
 
@@ -22,7 +23,7 @@ const Footer = () => {
         <TopSection>
           <BrandSection>
             <BrandTop>
-              <LogoCircle />
+              <LogoImage src={logoImg} alt="커튼콜 로고" />
               <BrandName>CURTAIN CALL</BrandName>
             </BrandTop>
 
@@ -45,24 +46,21 @@ const Footer = () => {
               >
                 전체 공연
               </MenuLink>
-
               <MenuLink
                 type="button"
                 onClick={() => handleMoveMusicalTab("공연중")}
               >
                 현재 공연
               </MenuLink>
-
               <MenuLink
                 type="button"
                 onClick={() => handleMoveMusicalTab("공연예정")}
               >
                 개막 예정
               </MenuLink>
-
               <MenuLink
                 type="button"
-                onClick={() => handleMoveMusicalTab("공연완료")}
+                onClick={() => handleMoveMusicalTab("공연종료")}
               >
                 공연 종료
               </MenuLink>
@@ -74,44 +72,44 @@ const Footer = () => {
               <CommunityGrid>
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityCategory("티켓 양도")}
+                  onClick={() => handleMoveCommunityTab("자유게시판")}
                 >
-                  티켓 양도
+                  자유게시판
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityCategory("정보 공유")}
+                  onClick={() => handleMoveCommunityTab("뮤지컬 후기")}
                 >
-                  정보 공유
+                  뮤지컬 후기
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityCategory("공연메이트")}
+                  onClick={() => handleMoveCommunityTab("같이봐요")}
                 >
-                  공연메이트
+                  같이봐요
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityCategory("토크 공간")}
+                  onClick={() => handleMoveCommunityTab("정보공유")}
                 >
-                  토크 공간
+                  정보공유
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityCategory("공연후기")}
+                  onClick={() => handleMoveCommunityTab("공지사항")}
                 >
-                  공연후기
+                  공지사항
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityCategory("Q&A")}
+                  onClick={() => handleMoveCommunityTab("질문 글")}
                 >
-                  Q&amp;A
+                  질문 글
                 </MenuLink>
               </CommunityGrid>
             </CommunityColumn>
@@ -165,14 +163,6 @@ const BrandTop = styled.div`
   margin-bottom: 18px;
 `;
 
-const LogoCircle = styled.div`
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #c9a84c;
-  flex-shrink: 0;
-`;
-
 const BrandName = styled.h2`
   margin: 0;
   font-size: 14px;
@@ -182,7 +172,7 @@ const BrandName = styled.h2`
 `;
 
 const BrandDescription = styled.p`
-  margin: 0;
+  margin: 0 0 18px 0;
   font-size: 12px;
   line-height: 1.7;
   color: #7f8aa3;
@@ -203,7 +193,7 @@ const MenuColumn = styled.div`
 const CommunityColumn = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 280px;
+  min-width: 260px;
 `;
 
 const MenuTitle = styled.h3`
@@ -231,7 +221,7 @@ const MenuLink = styled.button`
 
 const CommunityGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(110px, 1fr));
+  grid-template-columns: repeat(2, minmax(100px, 1fr));
   column-gap: 28px;
   row-gap: 0;
 `;
@@ -267,4 +257,11 @@ const PolicyLink = styled.button`
   &:hover {
     color: #c9a84c;
   }
+`;
+
+const LogoImage = styled.img`
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
 `;
