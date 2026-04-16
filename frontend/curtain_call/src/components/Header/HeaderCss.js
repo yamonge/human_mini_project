@@ -46,7 +46,7 @@ export const LogoText = styled.span`
 /* --- 검색 섹션 --- */
 export const SearchWrapper = styled.div`
   flex: 1; /* 남은 공간을 차지 */
-  max-width: 580px; /* 최대 너비 */
+  max-width: 500px; /* 최대 너비 */
   margin: 0 40px; /* 좌우 마진 */
   position: relative; /* 내부 아이콘의 절대 위치 지정을 위함 */
 
