@@ -87,6 +87,8 @@ const Login = () => {
       const userData = {
         name: userName,
         email: userEmail,
+        userId: 1,
+        isAdmin: true,
       };
 
       localStorage.setItem("user", JSON.stringify(userData));
