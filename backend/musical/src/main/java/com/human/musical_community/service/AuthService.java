@@ -1,7 +1,9 @@
 package com.human.musical_community.service;
 
+import com.human.musical_community.dto.request.FindIdReqDto;
 import com.human.musical_community.dto.request.LoginReqDto;
 import com.human.musical_community.dto.request.SignUpReqDto;
+import com.human.musical_community.dto.response.FindIdResDto;
 import com.human.musical_community.dto.response.LoginResDto;
 import com.human.musical_community.entity.User;
 import com.human.musical_community.repository.UserRepository;
@@ -36,6 +38,7 @@ public class AuthService {
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))  // BCrypt 암호화
                 .name(dto.getName())
+                .birthDate(dto.getBirthDate())
                 .isAdmin(false)
                 .build();
 
@@ -63,6 +66,15 @@ public class AuthService {
                 .email(user.getEmail())
                 .name(user.getName())
                 .isAdmin(user.isAdmin())
+                .build();
+    }
+
+    public FindIdResDto findId(FindIdReqDto dto){
+        User user = userRepository.findByNameAndBirthDate(dto.getName(), dto.getBirthDate())
+                .orElseThrow(() -> new IllegalArgumentException("해당 정보에대한 이메일이 존재하지 않습니다."));
+
+        return FindIdResDto.builder()
+                .email(user.getEmail())
                 .build();
     }
 }
