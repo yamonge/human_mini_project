@@ -1,3 +1,4 @@
+// LoginCss.js 내용은 동일합니다.
 import styled, { css } from "styled-components";
 
 export const LoginContainer = styled.div`
@@ -5,7 +6,7 @@ export const LoginContainer = styled.div`
   background-color: #111118;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  padding: 30px;
+  padding: 20px 30px;
   color: #f0f0f0;
   font-family: "Arial", sans-serif;
   position: relative;
@@ -13,7 +14,7 @@ export const LoginContainer = styled.div`
 `;
 
 export const Header = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 
 export const Title = styled.h2`
@@ -72,9 +73,21 @@ export const LoginInput = styled.input`
     outline: none;
     border-color: #d4af37;
   }
+
+  ${(props) =>
+    props.validationStatus === "valid" &&
+    css`
+      border-color: green;
+    `}
+
+  ${(props) =>
+    props.validationStatus === "invalid" &&
+    css`
+      border-color: red;
+    `}
 `;
 
-export const AccountRecovery = styled.a`
+export const FindPasswordLink = styled.a`
   position: absolute;
   right: 0;
   top: -28px;
@@ -82,8 +95,16 @@ export const AccountRecovery = styled.a`
   color: #888;
   text-decoration: none;
   &:hover {
-    cursor: pointer;
+    text-decoration: underline;
   }
+`;
+
+export const ErrorMessage = styled.p`
+  font-size: 12px;
+  position: absolute;
+  bottom: -33px;
+  right: 0;
+  color: ${(props) => props.color || "red"};
 `;
 
 export const Button = styled.button`
