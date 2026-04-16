@@ -44,7 +44,7 @@ export const LogoText = styled.span`
 /* --- 검색 섹션 --- */
 export const SearchWrapper = styled.div`
   flex: 1;
-  max-width: 580px;
+  max-width: 500px;
   margin: 0 40px;
   position: relative;
 

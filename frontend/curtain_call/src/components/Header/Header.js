@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import * as S from "./HeaderCss";
 import { Search, ChevronDown, LogOut } from "lucide-react";
 import logo from "../img/logo.png";
+import { musicalMockData } from "../PRO/MusicalList";
 
 const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -19,17 +20,41 @@ const Header = () => {
 
   const isLoggedIn = !!user;
 
-  // 로그아웃 함수
   const handleLogout = () => {
-    localStorage.removeItem("user"); // 저장된 정보 삭제
+    localStorage.removeItem("user");
     setUser(null);
     setIsMenuOpen(false);
     navigate("/");
   };
 
+  const handleSearch = () => {
+    const keyword = searchKeyword.trim().toLowerCase();
+
+    if (!keyword) return;
+
+    const matchedMusical = musicalMockData.find((musical) =>
+      String(musical.title || "")
+        .toLowerCase()
+        .includes(keyword),
+    );
+
+    if (matchedMusical) {
+      navigate(`/musicals/${matchedMusical.musicalId}`);
+      setSearchKeyword("");
+      return;
+    }
+
+    alert("일치하는 뮤지컬을 찾을 수 없습니다.");
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <S.HeaderContainer>
-      {/* 1. 로고 섹션 (기존과 동일) */}
       <S.LogoSection onClick={() => navigate("/")}>
         <S.LogoIcon>
           <img src={logo} alt="로고" />
@@ -37,13 +62,20 @@ const Header = () => {
         <S.LogoText>CURTAIN CALL</S.LogoText>
       </S.LogoSection>
 
-      {/* 2. 검색 섹션 (기존과 동일) */}
       <S.SearchWrapper>
-        <Search size={20} />
-        <S.SearchInput placeholder="뮤지컬명을 입력하세요" />
+        <Search
+          size={20}
+          style={{ cursor: "pointer" }}
+          onClick={handleSearch}
+        />
+        <S.SearchInput
+          placeholder="뮤지컬명을 입력하세요"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+          onKeyDown={handleSearchKeyDown}
+        />
       </S.SearchWrapper>
 
-      {/* 3. 우측 섹션 - 데이터 바인딩 부분 수정 */}
       <S.RightSection>
         {!isLoggedIn ? (
           <>
@@ -57,7 +89,6 @@ const Header = () => {
         ) : (
           <S.ProfileContainer>
             <S.ProfileToggle onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {/* 이름의 첫 글자만 추출 (예: 김민지 -> 김) */}
               <S.Avatar>{user.name ? user.name.charAt(0) : "U"}</S.Avatar>
               <span style={{ fontSize: "15px", fontWeight: "500" }}>
                 {user.name}

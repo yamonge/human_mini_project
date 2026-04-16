@@ -3,7 +3,6 @@ import styled from "styled-components";
 import HeroSection from "./HeroSection";
 import MusicalListSection from "./MusicalListSection";
 import CommunityHotSection from "./CommunityHotSection";
-import Footer from "../common/Footer";
 import { musicalMockData } from "../PRO/MusicalList";
 
 const MainPage = () => {
@@ -67,8 +66,6 @@ const MainPage = () => {
         <MusicalListSection musicals={musicals} />
         <CommunityHotSection posts={posts} />
       </Container>
-
-      <Footer />
     </Page>
   );
 };
