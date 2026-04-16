@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Pagination from "../common/Pagination";
 
 const REVIEW_PAGE_SIZE = 5;
 
 const MusicalDetailPage = () => {
   const { musicalId } = useParams();
+  const navigate = useNavigate();
 
   const [musicalDetail] = useState({
     musicalId: Number(musicalId),
@@ -212,13 +213,22 @@ const MusicalDetailPage = () => {
   }, [sortedReviews, currentReviewPage]);
 
   const handleSubmitReview = () => {
+    const storedUser = localStorage.getItem("user");
+
+    if (!storedUser) {
+      alert("로그인 후 후기를 등록할 수 있습니다.");
+      navigate("/login");
+      return;
+    }
+
     if (!isSubmitEnabled) return;
 
+    const loginUser = JSON.parse(storedUser);
     const now = new Date();
 
     const newReview = {
       reviewId: Date.now(),
-      userName: "현재사용자",
+      userName: loginUser.name || "현재사용자",
       rating: selectedRating,
       content: reviewContent.trim(),
       detail: reviewContent.trim(),
