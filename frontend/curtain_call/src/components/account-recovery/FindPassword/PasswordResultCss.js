@@ -1,7 +1,14 @@
+// PasswordResultCss.js
 import styled from "styled-components";
 
 // 전체 페이지 배경
-export const Container = styled.div``;
+export const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #000; /* 전체 배경색 */
+`;
 
 // 중앙 카드 박스
 export const ResultCard = styled.div`
@@ -17,6 +24,7 @@ export const ResultCard = styled.div`
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 `;
 
+// 닫기 버튼 스타일
 export const CloseButton = styled.button`
   position: absolute;
   top: 20px;
@@ -47,6 +55,7 @@ export const IconCircle = styled.div`
   font-size: 30px;
 `;
 
+// 제목 스타일
 export const Title = styled.h2`
   color: #ffffff;
   font-size: 20px;
@@ -55,6 +64,7 @@ export const Title = styled.h2`
   text-align: center;
 `;
 
+// 서브 텍스트 스타일
 export const SubText = styled.p`
   color: #8a8d94;
   font-size: 14px;
@@ -86,6 +96,7 @@ export const MessageBox = styled.div`
   gap: 12px;
 `;
 
+// 메시지 목록 스타일
 export const MessageList = styled.ul`
   margin: 0;
   padding: 0;
@@ -93,6 +104,7 @@ export const MessageList = styled.ul`
   width: 100%;
 `;
 
+// 메시지 항목 스타일
 export const MessageItem = styled.li`
   color: #8a8d94;
   font-size: 13.5px;
@@ -129,7 +141,9 @@ export const InfoIcon = styled.div`
   margin-top: 2px;
 `;
 
+// 메인 버튼 스타일 (예: 로그인 페이지로, 다시 시도하기)
 export const MainButton = styled.button`
+  // MainButton으로 컬럼명 수정
   width: 100%;
   height: 56px;
   background: #c9a84c;
@@ -150,6 +164,7 @@ export const MainButton = styled.button`
   }
 `;
 
+// 서브 버튼 스타일 (예: 다시 시도하기, 회원가입하기)
 export const SubButton = styled.button`
   width: 100%;
   height: 56px;
@@ -166,6 +181,7 @@ export const SubButton = styled.button`
   }
 `;
 
+// 푸터 링크 스타일 (예: 계정 찾기로 돌아가기)
 export const FooterLink = styled.div`
   color: #5a5d63;
   font-size: 14px;

@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 
+// 로그인/회원가입/계정 찾기 컨테이너 스타일 정의
 export const LoginContainer = styled.div`
   width: 420px;
   background-color: #111118;
@@ -30,23 +31,27 @@ export const LoginContainer = styled.div`
   overflow-y: auto;
 `;
 
+// 헤더 스타일 정의
 export const Header = styled.div`
   margin-bottom: 20px;
   text-align: center; /* 헤더 텍스트도 중앙 정렬 */
 `;
 
+// 제목 스타일 정의
 export const Title = styled.h2`
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 8px;
 `;
 
+// 부제목 스타일 정의
 export const Subtitle = styled.p`
   font-size: 14px;
   color: #888;
   line-height: 1.4; /* 줄 간격 추가 */
 `;
 
+// 닫기 버튼 스타일 정의
 export const CloseButton = styled.button`
   position: absolute;
   top: 20px;
@@ -60,6 +65,7 @@ export const CloseButton = styled.button`
   line-height: 1;
 `;
 
+// 탭 컨테이너 스타일 정의
 export const TabContainer = styled.div`
   display: flex;
   margin-bottom: 20px;
@@ -68,6 +74,7 @@ export const TabContainer = styled.div`
   overflow: hidden;
 `;
 
+// 탭 버튼 스타일 정의
 export const TabButton = styled.button`
   flex: 1;
   padding: 12px 0;
@@ -79,6 +86,7 @@ export const TabButton = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease;
 
+  // active prop이 true일 때 적용되는 스타일
   ${(props) =>
     props.active &&
     css`
@@ -86,20 +94,24 @@ export const TabButton = styled.button`
       color: #111118;
     `}
 
+  // hover 시 스타일 (active 상태가 아닐 때만)
   &:hover:not(:disabled) {
     background-color: ${(props) => (props.active ? "#e0b94b" : "#3a3a3a")};
   }
 
+  // 첫 번째 자식 요소의 테두리 반경 설정
   &:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
   }
+  // 마지막 자식 요소의 테두리 반경 설정
   &:last-child {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
 `;
 
+// 폼 설명 텍스트 스타일 정의
 export const FormDescription = styled.p`
   font-size: 14px;
   color: #ccc;
@@ -107,17 +119,20 @@ export const FormDescription = styled.p`
   margin-top: -5px;
 `;
 
+// 찾기 폼 스타일 정의
 export const FindForm = styled.form`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 `;
 
+// 입력 그룹 스타일 정의 (레이블과 입력 필드를 묶음)
 export const InputGroup = styled.div`
   margin-bottom: 25px; /* 에러 메시지 공간을 포함하여 여유있게 조정 */
   position: relative;
 `;
 
+// 레이블 스타일 정의
 export const Label = styled.label`
   display: block;
   font-size: 14px;
@@ -125,6 +140,7 @@ export const Label = styled.label`
   color: #ccc;
 `;
 
+// 찾기 입력 필드 스타일 정의
 export const FindInput = styled.input`
   width: 100%;
   padding: 12px 15px;
@@ -141,6 +157,13 @@ export const FindInput = styled.input`
     border-color: #d4af37;
   }
 
+  // 웹킷 기반 브라우저 자동 완성 스타일 재정의
+  &:-webkit-autofill {
+    -webkit-text-fill-color: #f0f0f0 !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  // 유효성 검사 상태에 따른 테두리 색상 변경
   ${(props) =>
     props.validationStatus === "valid" &&
     css`
@@ -154,21 +177,17 @@ export const FindInput = styled.input`
     `}
 `;
 
+// 에러 메시지 스타일 정의
 export const ErrorMessage = styled.p`
   font-size: 12px;
   position: absolute;
   bottom: -33px;
-
-  /* ❌ 기존 */
-  /* left: 0; */
-
-  /* ✅ 수정 (우측 정렬) */
-  right: 0;
-
-  color: ${(props) => props.color || "red"};
+  right: 0; /* 우측 정렬 */
+  color: ${(props) => props.color || "red"}; // props.color가 없으면 기본값 red
   min-height: 14px;
 `;
 
+// 버튼 스타일 정의
 export const Button = styled.button`
   width: 100%;
   padding: 14px;
@@ -180,6 +199,7 @@ export const Button = styled.button`
     border-color 0.3s ease;
   margin-top: 5px; /* 버튼 상단 마진 */
 
+  // outline prop에 따른 조건부 스타일 적용
   ${(props) =>
     props.outline
       ? css`
@@ -201,6 +221,7 @@ export const Button = styled.button`
         `}
 `;
 
+// 로그인으로 돌아가기 링크 스타일 정의
 export const ReturnToLoginLink = styled.a`
   display: block;
   text-align: center;
@@ -215,6 +236,7 @@ export const ReturnToLoginLink = styled.a`
   }
 `;
 
+// 푸터 텍스트 스타일 정의
 export const FooterText = styled.div`
   text-align: center;
   margin-top: 10px;
@@ -224,6 +246,7 @@ export const FooterText = styled.div`
 
 // --- 아이디 찾기 결과 화면 관련 스타일 ---
 
+// 결과 아이콘 컨테이너 스타일 정의
 export const ResultIconContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -236,6 +259,7 @@ export const ResultIconContainer = styled.div`
   background-color: rgba(255, 255, 255, 0.1); /* 기본 색상 */
 `;
 
+// 성공 아이콘 스타일 정의
 export const ResultIconSuccess = styled.div`
   width: 24px;
   height: 24px;
@@ -244,6 +268,7 @@ export const ResultIconSuccess = styled.div`
   -webkit-mask: url("/icons/check_circle.svg") no-repeat center / contain;
 `;
 
+// 실패 아이콘 스타일 정의
 export const ResultIconFail = styled.div`
   width: 30px;
   height: 30px;
@@ -252,6 +277,7 @@ export const ResultIconFail = styled.div`
   -webkit-mask: url("/icons/close_circle.svg") no-repeat center / contain;
 `;
 
+// 결과 제목 스타일 정의
 export const ResultTitle = styled.h2`
   font-size: 20px;
   font-weight: bold;
@@ -259,6 +285,7 @@ export const ResultTitle = styled.h2`
   margin-bottom: 8px;
 `;
 
+// 결과 부제목 스타일 정의
 export const ResultSubtitle = styled.p`
   font-size: 12px;
   color: rgba(255, 255, 255, 0.35);
@@ -267,6 +294,7 @@ export const ResultSubtitle = styled.p`
   line-height: 1.4;
 `;
 
+// 결과 정보 그룹 (이메일, 가입일 등) 스타일 정의
 export const ResultInfoGroup = styled.div`
   display: flex;
   justify-content: space-between;
@@ -278,12 +306,14 @@ export const ResultInfoGroup = styled.div`
   position: relative;
 `;
 
+// 결과 정보 레이블 스타일 정의
 export const ResultInfoLabel = styled.span`
   font-size: 14px;
   color: rgba(255, 255, 255, 0.55);
   white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 `;
 
+// 결과 정보 값 스타일 정의
 export const ResultInfoValue = styled.span`
   font-size: 14px;
   font-weight: bold;
@@ -291,6 +321,7 @@ export const ResultInfoValue = styled.span`
     props.isValue ? "rgb(201, 168, 76)" : "rgba(255, 255, 255, 0.55)"};
 `;
 
+// 소셜 로그인 텍스트 (결과 화면에서 사용) 스타일 정의
 export const SocialLoginText = styled.span`
   position: absolute;
   right: 15px;
@@ -303,6 +334,7 @@ export const SocialLoginText = styled.span`
   border-radius: 4px;
 `;
 
+// 결과 화면 버튼 컨테이너 스타일 정의
 export const ResultButtonsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -310,8 +342,10 @@ export const ResultButtonsContainer = styled.div`
   margin-top: 10px;
 `;
 
-export const ResultButton = styled(Button)``; // 기존 Button 스타일 재활용
+// 결과 화면 버튼 (기존 Button 스타일 재활용)
+export const ResultButton = styled(Button)``;
 
+// 정보 박스 스타일 정의
 export const InfoBox = styled.div`
   background-color: rgba(
     251,
@@ -322,10 +356,11 @@ export const InfoBox = styled.div`
   border: 1px solid #5a2e2e; /* 테두리 색상 */
   border-radius: 8px;
   padding: 15px;
-  margin-top: px;
+  margin-top: 20px; /* 이미지에서 보이는 간격에 맞게 조정 */
   margin-bottom: 10px;
 `;
 
+// 정보 박스 제목 스타일 정의
 export const InfoBoxTitle = styled.p`
   font-size: 14px;
   color: #f0f0f0;
@@ -333,12 +368,14 @@ export const InfoBoxTitle = styled.p`
   margin-bottom: 10px;
 `;
 
+// 정보 박스 리스트 스타일 정의
 export const InfoBoxList = styled.ul`
   list-style: none; /* 기본 리스트 스타일 제거 */
   padding: 0;
   margin: 0;
 `;
 
+// 정보 박스 리스트 아이템 스타일 정의
 export const InfoBoxListItem = styled.li`
   font-size: 12px;
   color: rgba(255, 255, 255, 0.35); /* 밝은 회색 텍스트 */

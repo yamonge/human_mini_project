@@ -19,49 +19,61 @@ import {
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
+  // 사용자 이메일 상태 변수
+  const [email, setEmail] = useState("");
+  // 사용자 비밀번호 상태 변수
+  const [password, setPassword] = useState("");
 
+  // 이메일 유효성 검사 상태 ('null', 'valid', 'invalid')
   const [isEmailValid, setIsEmailValid] = useState("null");
+  // 비밀번호 유효성 검사 상태 ('null', 'valid', 'invalid')
   const [isPasswordValid, setIsPasswordValid] = useState("null");
+  // 비밀번호 표시/숨김 상태
   const [showPassword, setShowPassword] = useState(false);
 
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  // 페이지 이동을 위한 useNavigate 훅 사용
+  const navigate = useNavigate();
 
+  // 이메일 유효성 검사 함수
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
-      return "";
+      return ""; // 이메일이 비어있으면 빈 문자열 반환
     }
-    return emailRegex.test(email) ? "valid" : "invalid";
+    return emailRegex.test(email) ? "valid" : "invalid"; // 정규식 테스트 결과에 따라 'valid' 또는 'invalid' 반환
   };
 
+  // 비밀번호 유효성 검사 함수
   const validatePassword = (password) => {
+    // 비밀번호는 최소 8자, 영문, 숫자, 특수문자 포함
     const passwordRegex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
     if (!password) {
-      return "";
+      return ""; // 비밀번호가 비어있으면 빈 문자열 반환
     }
-    return passwordRegex.test(password) ? "valid" : "invalid";
+    return passwordRegex.test(password) ? "valid" : "invalid"; // 정규식 테스트 결과에 따라 'valid' 또는 'invalid' 반환
   };
 
+  // 이메일 입력 필드 변경 핸들러
   const handleEmailChange = (e) => {
     const value = e.target.value;
-    setUserEmail(value);
-    setIsEmailValid(validateEmail(value));
+    setEmail(value); // 이메일 상태 업데이트
+    setIsEmailValid(validateEmail(value)); // 이메일 유효성 검사 및 상태 업데이트
   };
 
+  // 비밀번호 입력 필드 변경 핸들러
   const handlePasswordChange = (e) => {
     const value = e.target.value;
-    setUserPassword(value);
-    setIsPasswordValid(validatePassword(value));
+    setPassword(value); // 비밀번호 상태 업데이트
+    setIsPasswordValid(validatePassword(value)); // 비밀번호 유효성 검사 및 상태 업데이트
   };
 
+  // 로그인 폼 제출 핸들러
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // 기본 폼 제출 동작 방지
 
-    // 1. 빈값 체크 및 형식 체크 (기존과 동일)
-    if (!userEmail || !userPassword) {
+    // 1. 빈값 체크 및 형식 체크
+    if (!email || !password) {
       alert("이메일과 비밀번호를 입력하세요.");
       return;
     }
@@ -73,24 +85,25 @@ const Login = () => {
       // [수정된 부분] 회원가입 때 저장했던 정보를 가져옴
       const registeredUser = JSON.parse(localStorage.getItem("registeredUser"));
 
-      let userName = "";
+      let name = ""; // 사용자 이름 변수
 
       // 만약 회원가입했던 이메일과 지금 로그인하려는 이메일이 같다면 가입한 이름을 사용
-      if (registeredUser && registeredUser.email === userEmail) {
-        userName = registeredUser.name;
+      if (registeredUser && registeredUser.email === email) {
+        name = registeredUser.name;
       } else {
         // 회원가입 기록이 없거나 다른 이메일이면 이메일 앞자리 사용(예외처리)
-        userName = userEmail.split("@")[0];
+        name = email.split("@")[0];
       }
 
       // 최종적으로 Header.js가 읽어갈 'user' 정보 생성
       const userData = {
-        name: userName,
-        email: userEmail,
-        userId: 1,
-        isAdmin: true,
+        name: name,
+        email: email,
+        userId: 1, // 임시 userId
+        isAdmin: true, // 임시 isAdmin
       };
 
+      // localStorage에 사용자 정보 저장
       localStorage.setItem("user", JSON.stringify(userData));
 
       alert(`${userData.name}님 환영합니다!`);
@@ -100,16 +113,19 @@ const Login = () => {
     }
   };
 
+  // 회원가입 버튼 클릭 핸들러
   const handleRegisterClick = () => {
     navigate("/signup"); // 회원가입 페이지로 이동
   };
 
+  // 닫기 버튼 클릭 핸들러
   const handleClose = () => {
     navigate("/"); // 메인으로 이동
   };
 
+  // 아이디/비밀번호 찾기 버튼 클릭 핸들러
   const handleAccountRecovery = () => {
-    navigate("/account-recovery");
+    navigate("/account-recovery"); // 계정 복구 페이지로 이동
   };
 
   return (
@@ -126,8 +142,8 @@ const Login = () => {
             type="email"
             id="email"
             placeholder="example@email.com"
-            value={userEmail}
-            onChange={handleEmailChange}
+            value={email} // email 상태와 바인딩
+            onChange={handleEmailChange} // 변경 핸들러 연결
             validationStatus={isEmailValid}
           />
         </InputGroup>
@@ -135,11 +151,11 @@ const Login = () => {
           <Label htmlFor="password">비밀번호</Label>
           <div style={{ position: "relative", width: "100%" }}>
             <LoginInput
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? "text" : "password"} // showPassword 상태에 따라 타입 변경
               id="password"
               placeholder="••••••••"
-              value={userPassword}
-              onChange={handlePasswordChange}
+              value={password} // password 상태와 바인딩
+              onChange={handlePasswordChange} // 변경 핸들러 연결
               validationStatus={isPasswordValid}
               style={{ paddingRight: "40px" }}
             />
@@ -152,9 +168,9 @@ const Login = () => {
                 cursor: "pointer",
                 color: "#888",
               }}
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowPassword(!showPassword)} // 클릭 시 showPassword 상태 토글
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              {showPassword ? <FaEyeSlash /> : <FaEye />} {/* 아이콘 변경 */}
             </span>
             <AccountRecovery onClick={handleAccountRecovery}>
               아이디 · 비밀번호 찾기

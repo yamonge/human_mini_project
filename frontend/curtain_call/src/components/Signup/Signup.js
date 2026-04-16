@@ -19,86 +19,121 @@ import {
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Signup = () => {
+  // 사용자 이름(닉네임) 상태 변수
   const [name, setName] = useState("");
+  // 로그인용 이메일 주소 상태 변수
   const [email, setEmail] = useState("");
+  // 암호화된 비밀번호 상태 변수
   const [password, setPassword] = useState("");
+  // 비밀번호 확인을 위한 상태 변수
   const [confirmPassword, setConfirmPassword] = useState("");
+  // 사용자 생년월일 상태 변수
   const [birthDate, setBirthDate] = useState("");
 
+  // 이름 유효성 검사 에러 메시지 상태
   const [nameError, setNameError] = useState("");
+  // 이메일 유효성 검사 에러 메시지 상태
   const [emailError, setEmailError] = useState("");
+  // 비밀번호 유효성 검사 에러 메시지 상태
   const [passwordError, setPasswordError] = useState("");
+  // 비밀번호 확인 유효성 검사 에러 메시지 상태
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  // 생년월일 유효성 검사 에러 메시지 상태
   const [birthDateError, setBirthDateError] = useState("");
 
+  // 비밀번호 표시/숨김 상태
   const [showPassword, setShowPassword] = useState(false);
+  // 확인 비밀번호 표시/숨김 상태
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // 페이지 이동을 위한 useNavigate 훅 사용
   const navigate = useNavigate();
 
+  // 이름 유효성 검사 함수
   const validateName = (name) => {
     if (!name) return "";
     return name.length >= 2 ? "valid" : "invalid"; // 예시: 2자 이상
   };
 
+  // 이메일 유효성 검사 함수
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) return "";
     return emailRegex.test(email) ? "valid" : "invalid";
   };
 
+  // 비밀번호 유효성 검사 함수
   const validatePassword = (password) => {
+    // 비밀번호는 최소 8자, 영문, 숫자, 특수문자 포함
     const passwordRegex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
     if (!password) return "";
     return passwordRegex.test(password) ? "valid" : "invalid";
   };
 
+  // 비밀번호 확인 유효성 검사 함수
   const validateConfirmPassword = (password, confirmPassword) => {
     if (!confirmPassword) return "";
     return password === confirmPassword ? "valid" : "invalid";
   };
 
-  const validateBirthDate = (date) => {
+  // 생년월일 유효성 검사 함수
+  const validateBirth_date = (date) => {
     if (!date) return "";
     // 간단한 날짜 형식 (YYYY-MM-DD) 검증
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     return dateRegex.test(date) ? "valid" : "invalid";
   };
 
+  // 이름 입력 필드 변경 핸들러
   const handleNameChange = (e) => {
     const value = e.target.value;
-    setName(value);
-    setNameError(validateName(value));
+    setName(value); // 이름 상태 업데이트
+    setNameError(validateName(value)); // 이름 유효성 검사 및 에러 상태 업데이트
   };
 
+  // 이메일 입력 필드 변경 핸들러
   const handleEmailChange = (e) => {
     const value = e.target.value;
-    setEmail(value);
-    setEmailError(validateEmail(value));
+    setEmail(value); // 이메일 상태 업데이트
+    setEmailError(validateEmail(value)); // 이메일 유효성 검사 및 에러 상태 업데이트
   };
 
+  // 비밀번호 입력 필드 변경 핸들러
   const handlePasswordChange = (e) => {
     const value = e.target.value;
-    setPassword(value);
-    setPasswordError(validatePassword(value));
+    setPassword(value); // 비밀번호 상태 업데이트
+    setPasswordError(validatePassword(value)); // 비밀번호 유효성 검사 및 에러 상태 업데이트
+    // 비밀번호 변경 시 확인 비밀번호 유효성도 다시 검사
     setConfirmPasswordError(validateConfirmPassword(value, confirmPassword));
   };
 
+  // 확인 비밀번호 입력 필드 변경 핸들러
   const handleConfirmPasswordChange = (e) => {
     const value = e.target.value;
-    setConfirmPassword(value);
+    setConfirmPassword(value); // 확인 비밀번호 상태 업데이트
+    // 확인 비밀번호 유효성 검사 및 에러 상태 업데이트
     setConfirmPasswordError(validateConfirmPassword(password, value));
   };
 
-  const handleBirthDateChange = (e) => {
+  // 생년월일 입력 필드 변경 핸들러
+  const handleBirth_dateChange = (e) => {
     const value = e.target.value;
-    setBirthDate(value);
-    setBirthDateError(validateBirthDate(value));
+    setBirthDate(value); // 생년월일 상태 업데이트
+    setBirthDateError(validateBirth_date(value)); // 생년월일 유효성 검사 및 에러 상태 업데이트
   };
 
+  // 회원가입 폼 제출 핸들러
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // 기본 폼 제출 동작 방지
+
+    // 🔥 1. 이메일 중복 체크 (맨 위에 넣는게 핵심)
+    const existingUser = JSON.parse(localStorage.getItem("registeredUser"));
+
+    if (existingUser && existingUser.email === email) {
+      alert("사용할 수 없는 이메일입니다. 다른 이메일을 입력해 주세요.");
+      return; // 🔥 여기서 바로 종료
+    }
 
     // 최종 유효성 검사 (모든 필드가 유효해야 제출)
     const isNameValid = validateName(name) === "valid";
@@ -106,28 +141,29 @@ const Signup = () => {
     const isPasswordValid = validatePassword(password) === "valid";
     const isConfirmPasswordValid =
       validateConfirmPassword(password, confirmPassword) === "valid";
-    const isBirthDateValid = validateBirthDate(birthDate) === "valid";
+    const isBirth_dateValid = validateBirth_date(birthDate) === "valid";
 
     if (
       isNameValid &&
       isEmailValid &&
       isPasswordValid &&
       isConfirmPasswordValid &&
-      isBirthDateValid
+      isBirth_dateValid
     ) {
+      // 가입할 사용자 데이터 객체 생성
       const registerData = {
         name,
         email,
         password,
-        birth_date: birthDate,
-        is_admin: 0, // 기본값 0
+        birthDate: birthDate,
+        is_admin: 0, // 기본값 0 (일반 사용자)
       };
       // [추가된 부분] 가입한 유저 정보를 'registeredUser'라는 키로 임시 저장
       localStorage.setItem("registeredUser", JSON.stringify(registerData));
 
       alert("회원가입이 완료되었습니다!");
-      navigate("/login");
-      // 여기에 API 호출 로직 추가
+      navigate("/login"); // 로그인 페이지로 이동
+      // 여기에 API 호출 로직 추가 (실제 서버에 사용자 정보를 전송)
     } else {
       alert("모든 필드를 올바르게 입력해주세요.");
       // 입력 에러 메시지 강제 표시
@@ -137,16 +173,18 @@ const Signup = () => {
       setConfirmPasswordError(
         validateConfirmPassword(password, confirmPassword),
       );
-      setBirthDateError(validateBirthDate(birthDate));
+      setBirthDateError(validateBirth_date(birthDate));
     }
   };
 
+  // 로그인 버튼 클릭 핸들러
   const handleLoginClick = () => {
     navigate("/login"); // 로그인 페이지로 이동
   };
 
+  // 닫기 버튼 클릭 핸들러
   const handleClose = () => {
-    navigate("/"); // 메인으로 이동
+    navigate("/"); // 메인 페이지로 이동
   };
 
   return (
@@ -273,7 +311,7 @@ const Signup = () => {
             type="date"
             id="birthDate"
             value={birthDate}
-            onChange={handleBirthDateChange}
+            onChange={handleBirth_dateChange}
             validationStatus={birthDateError}
             // placeholder는 type="date"일 때 브라우저 기본 UI에 따라 다르게 보일 수 있음
           />
