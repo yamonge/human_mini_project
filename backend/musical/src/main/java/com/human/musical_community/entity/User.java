@@ -33,7 +33,7 @@ public class User {
 
     @Column(name = "is_admin")
     @Builder.Default
-    private boolean isAdmin = false;
+    private int isAdmin = 0;
 
     // ===== 1조 추가 필드 =====
     @Column(name = "birth_date")

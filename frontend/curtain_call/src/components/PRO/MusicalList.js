@@ -2,99 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import AxiosApi from "../../api/AxiosApi";
 
-export const musicalMockData = [
-  {
-    musicalId: 1,
-    title: "레 미제라블",
-    status: "공연중",
-    rating: 9.8,
-    synopsis:
-      "빅토르 위고의 불멸의 명작이 무대 위에서 살아 숨쉰다. 혁명과 사랑, 용서와 구원의 대서사시.",
-    venue: "블루스퀘어 신한카드홀",
-    startDate: "2026.03.15",
-    endDate: "2026.07.30",
-    castName: "양준모, 민우혁, 카이, 이지혜",
-    posterUrl: "https://via.placeholder.com/130x180",
-  },
-  {
-    musicalId: 2,
-    title: "해밀턴",
-    status: "공연예정",
-    rating: 9.7,
-    synopsis:
-      "미국 건국의 아버지 알렉산더 해밀턴의 일생을 힙합과 R&B로 풀어낸 혁신적인 뮤지컬.",
-    venue: "LG아트센터 서울",
-    startDate: "2026.04.20",
-    endDate: "2026.08.31",
-    castName: "박은태, 김준수, 아이비",
-    posterUrl: "https://via.placeholder.com/130x180",
-  },
-  {
-    musicalId: 3,
-    title: "오페라의 유령",
-    status: "공연중",
-    rating: 9.6,
-    synopsis:
-      "세계에서 가장 사랑받는 뮤지컬. 파리 오페라 하우스의 지하 깊숙이 숨겨진 사랑 이야기.",
-    venue: "샤롯데씨어터",
-    startDate: "2026.04.01",
-    endDate: "2026.09.14",
-    castName: "전동석, 손지수, 김우형",
-    posterUrl: "https://via.placeholder.com/130x180",
-  },
-  {
-    musicalId: 4,
-    title: "위키드",
-    status: "공연중",
-    rating: 9.5,
-    synopsis:
-      "오즈의 마법사의 또 다른 이야기. 착한 마녀와 나쁜 마녀가 되기 이전, 두 소녀의 우정과 성장에 관한 이야기.",
-    venue: "예술의전당 오페라극장",
-    startDate: "2026.02.01",
-    endDate: "2026.08.20",
-    castName: "옥주현,정선아,박강현",
-    posterUrl: "https://via.placeholder.com/130x180",
-  },
-  {
-    musicalId: 5,
-    title: "엘리자벳",
-    status: "공연예정",
-    rating: 9.5,
-    synopsis:
-      "오스트리아의 황후 엘리자벳의 파란만장한 일생을 그린 웅장한 유럽 뮤지컬.",
-    venue: "예술의전당 오페라극장",
-    startDate: "2026.06.01",
-    endDate: "2026.11.30",
-    castName: "김소현, 박효신, 규현",
-    posterUrl: "https://via.placeholder.com/130x180",
-  },
-  {
-    musicalId: 6,
-    title: "맘마미아",
-    status: "공연예정",
-    rating: 9.4,
-    synopsis:
-      "ABBA의 명곡들로 가득 찬 유쾌하고화려한 무대. 웃음과 감동이 넘치는 축제의 현장.",
-    venue: "디큐브아트센터",
-    startDate: "2026.05.10",
-    endDate: "2026.10.05",
-    castName: "최정원, 나하나, 홍지민",
-    posterUrl: "https://via.placeholder.com/130x180",
-  },
-  {
-    musicalId: 7,
-    title: "공연이 종료된 작품",
-    status: "공연완료",
-    rating: 8.5,
-    synopsis: "이미 종료된 공연의 예시 데이터입니다.",
-    venue: "예술의전당",
-    startDate: "2025.01.01",
-    endDate: "2025.02.01",
-    castName: "배우A",
-    posterUrl: "https://via.placeholder.com/130x180",
-  },
-];
+export const musicalMockData = async () => {
+  const response = await AxiosApi.getMusicalList();
+  return response;
+};
 
 const MainContent = styled.main`
   background-color: #0b0c10;

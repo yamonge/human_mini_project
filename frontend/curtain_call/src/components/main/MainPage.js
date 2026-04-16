@@ -11,47 +11,11 @@ const MainPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const dummyPosts = [
-      {
-        postId: 1,
-        category: "티켓 양도",
-        title: "레 미제라블 2층 R석 양도합니다",
-        commentCount: 124,
-      },
-      {
-        postId: 2,
-        category: "정보 공유",
-        title: "이번 주 할인 이벤트 정리해봤어요",
-        commentCount: 15,
-      },
-      {
-        postId: 3,
-        category: "공연후기",
-        title: "레 미제라블 4번대 관람 후기입니다",
-        commentCount: 89,
-      },
-      {
-        postId: 4,
-        category: "Q&A",
-        title: "2026년 상반기 뮤지컬 라인업 총정리",
-        commentCount: 203,
-      },
-      {
-        postId: 5,
-        category: "토크 공간",
-        title: "가장 좋아하는 넘버 하나씩 적어봐요",
-        commentCount: 55,
-      },
-      {
-        postId: 6,
-        category: "공연 메이트",
-        title: "이번 주말 같이 보실 분 구합니다",
-        commentCount: 41,
-      },
-    ];
-
-    setMusicals(musicalMockData);
-    setPosts(dummyPosts);
+    const fetchMusicals = async () => {
+      const response = await musicalMockData();
+      setMusicals(response.data);
+    };
+    fetchMusicals();
     setLoading(false);
   }, []);
 

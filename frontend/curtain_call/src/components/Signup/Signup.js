@@ -17,6 +17,7 @@ import {
   SocialButton,
 } from "../Signup/SignupCss"; // Adjust path as needed
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import AxiosApi from "../../api/AxiosApi";
 
 const Signup = () => {
   // 사용자 이름(닉네임) 상태 변수
@@ -124,16 +125,8 @@ const Signup = () => {
   };
 
   // 회원가입 폼 제출 핸들러
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // 기본 폼 제출 동작 방지
-
-    // 🔥 1. 이메일 중복 체크 (맨 위에 넣는게 핵심)
-    const existingUser = JSON.parse(localStorage.getItem("registeredUser"));
-
-    if (existingUser && existingUser.email === email) {
-      alert("사용할 수 없는 이메일입니다. 다른 이메일을 입력해 주세요.");
-      return; // 🔥 여기서 바로 종료
-    }
 
     // 최종 유효성 검사 (모든 필드가 유효해야 제출)
     const isNameValid = validateName(name) === "valid";
@@ -152,18 +145,19 @@ const Signup = () => {
     ) {
       // 가입할 사용자 데이터 객체 생성
       const registerData = {
-        name,
-        email,
-        password,
+        name: name,
+        email: email,
+        password: password,
         birthDate: birthDate,
-        is_admin: 0, // 기본값 0 (일반 사용자)
       };
-      // [추가된 부분] 가입한 유저 정보를 'registeredUser'라는 키로 임시 저장
-      localStorage.setItem("registeredUser", JSON.stringify(registerData));
-
-      alert("회원가입이 완료되었습니다!");
-      navigate("/login"); // 로그인 페이지로 이동
       // 여기에 API 호출 로직 추가 (실제 서버에 사용자 정보를 전송)
+      const response = await AxiosApi.signUp(registerData);
+      if (response.success) {
+        alert("회원가입이 완료되었습니다!");
+        navigate("/login"); // 로그인 페이지로 이동
+      } else {
+        alert(response);
+      }
     } else {
       alert("모든 필드를 올바르게 입력해주세요.");
       // 입력 에러 메시지 강제 표시

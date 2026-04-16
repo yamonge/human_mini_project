@@ -9,6 +9,19 @@ const Pagination = ({
   height = 28,
 }) => {
   const totalPages = Math.max(1, Math.ceil(totalCount / itemsPerPage));
+  const MAX_VISIBLE_PAGES = 5;
+  const halfRange = Math.floor(MAX_VISIBLE_PAGES / 2);
+
+  let startPage = Math.max(1, currentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1);
+
+  // 뒤쪽 페이지가 모자라면 앞쪽 페이지를 늘려서 최대 5개를 유지한다.
+  startPage = Math.max(1, endPage - MAX_VISIBLE_PAGES + 1);
+
+  const visiblePages = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index,
+  );
 
   const handlePrev = () => {
     if (currentPage > 1) {
@@ -33,19 +46,17 @@ const Pagination = ({
         &lt;
       </ArrowButton>
 
-      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-        (page) => (
-          <PageButton
-            key={page}
-            onClick={() => onPageChange(page)}
-            $active={page === currentPage}
-            $width={width}
-            $height={height}
-          >
-            {page}
-          </PageButton>
-        ),
-      )}
+      {visiblePages.map((page) => (
+        <PageButton
+          key={page}
+          onClick={() => onPageChange(page)}
+          $active={page === currentPage}
+          $width={width}
+          $height={height}
+        >
+          {page}
+        </PageButton>
+      ))}
 
       <ArrowButton
         onClick={handleNext}
