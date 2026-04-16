@@ -1,18 +1,20 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
-export const Container = styled.div`
-  width: 420px;
-  background-color: #0d0f1a;
-  border-radius: 20px;
-  padding: 40px 30px;
-  color: #fff;
+// 전체 페이지 배경
+export const Container = styled.div``;
 
-  position: absolute;
-  top: 15%;
-  left: 50%;
-  transform: translateX(-50%);
-
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+// 중앙 카드 박스
+export const ResultCard = styled.div`
+  width: 100%;
+  max-width: 420px;
+  background: #111319;
+  border-radius: 24px;
+  padding: 48px 32px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 `;
 
 export const CloseButton = styled.button`
@@ -21,123 +23,157 @@ export const CloseButton = styled.button`
   right: 20px;
   background: none;
   border: none;
-  color: #aaa;
-  font-size: 20px;
+  color: #f0f0f0;
+  font-size: 24px;
   cursor: pointer;
+  padding: 0;
+  line-height: 1;
 `;
 
-export const IconWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-bottom: 25px;
-`;
-
-export const IconBg = styled.div`
-  width: 70px;
-  height: 70px;
+// 상단 원형 아이콘 영역
+export const IconCircle = styled.div`
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
+  margin-bottom: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background-color: ${(props) =>
-    props.success ? "rgba(201,168,76,0.15)" : "rgba(255,70,70,0.15)"};
-`;
-
-export const Icon = styled.div`
-  width: 30px;
-  height: 30px;
-
-  background-color: ${(props) => (props.success ? "#c9a84c" : "#ff4d4f")};
-
-  mask: ${(props) =>
-    props.success
-      ? "url('/icons/mail.svg') no-repeat center / contain"
-      : "url('/icons/close_circle.svg') no-repeat center / contain"};
-
-  -webkit-mask: ${(props) =>
-    props.success
-      ? "url('/icons/mail.svg') no-repeat center / contain"
-      : "url('/icons/close_circle.svg') no-repeat center / contain"};
+  background: ${(props) =>
+    props.fail ? "rgba(255, 77, 79, 0.1)" : "rgba(201, 168, 76, 0.1)"};
+  border: 1px solid
+    ${(props) => (props.fail ? "rgba(255, 77, 79, 0.2)" : "transparent")};
+  color: ${(props) => (props.fail ? "#ff4d4f" : "#c9a84c")};
+  font-size: 30px;
 `;
 
 export const Title = styled.h2`
-  text-align: center;
+  color: #ffffff;
   font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-`;
-
-export const Description = styled.p`
+  font-weight: 600;
+  margin-bottom: 12px;
   text-align: center;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
-  line-height: 1.5;
-  margin-bottom: 25px;
 `;
 
-export const InfoBox = styled.div`
-  background-color: ${(props) =>
-    props.success ? "rgba(255,255,255,0.05)" : "rgba(255, 70, 70, 0.08)"};
+export const SubText = styled.p`
+  color: #8a8d94;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 32px;
+  white-space: pre-line;
 
+  strong {
+    color: #ffffff;
+    border-bottom: 1px solid #ffffff;
+    font-weight: normal;
+  }
+`;
+
+// 안내 메시지 박스 (중앙 회색/붉은색 박스)
+export const MessageBox = styled.div`
+  width: 100%;
+  background: ${(props) =>
+    props.fail ? "rgba(255, 77, 79, 0.03)" : "rgba(255, 255, 255, 0.03)"};
   border: 1px solid
     ${(props) =>
-      props.success ? "rgba(255,255,255,0.1)" : "rgba(255,70,70,0.3)"};
-
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 25px;
+      props.fail ? "rgba(255, 77, 79, 0.1)" : "rgba(255, 255, 255, 0.05)"};
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 32px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 12px;
 `;
 
-export const InfoText = styled.p`
-  font-size: 13px;
-  color: ${(props) =>
-    props.success ? "rgba(255,255,255,0.6)" : "rgba(255,120,120,0.9)"};
+export const MessageList = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+`;
+
+export const MessageItem = styled.li`
+  color: #8a8d94;
+  font-size: 13.5px;
+  line-height: 1.6;
   margin-bottom: 8px;
+  padding-left: 16px;
+  position: relative;
 
   &:last-child {
     margin-bottom: 0;
   }
+
+  &::before {
+    content: "•";
+    color: ${(props) => (props.fail ? "#ff4d4f" : "#555")};
+    position: absolute;
+    left: 0;
+  }
 `;
 
-export const Button = styled.button`
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 14px;
-  cursor: pointer;
-  margin-bottom: 10px;
-
-  ${(props) =>
-    props.primary
-      ? css`
-          background-color: #c9a84c;
-          color: #111;
-          border: none;
-
-          &:hover {
-            background-color: #e0b94b;
-          }
-        `
-      : css`
-          background-color: transparent;
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          color: rgba(255, 255, 255, 0.7);
-
-          &:hover {
-            background-color: #222;
-          }
-        `}
-`;
-
-export const BottomLink = styled.p`
-  text-align: center;
+// 성공 시 나타나는 느낌표 아이콘
+export const InfoIcon = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #333;
+  color: #111;
   font-size: 12px;
-  color: #666;
-  margin-top: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+`;
+
+export const MainButton = styled.button`
+  width: 100%;
+  height: 56px;
+  background: #c9a84c;
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
 
   &:hover {
-    text-decoration: underline;
+    opacity: 0.9;
+  }
+`;
+
+export const SubButton = styled.button`
+  width: 100%;
+  height: 56px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 32px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+`;
+
+export const FooterLink = styled.div`
+  color: #5a5d63;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  &:hover {
+    color: #888;
   }
 `;

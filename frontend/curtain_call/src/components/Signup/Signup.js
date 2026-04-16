@@ -122,10 +122,12 @@ const Signup = () => {
         birth_date: birthDate,
         is_admin: 0, // 기본값 0
       };
-      console.log("회원가입 데이터:", registerData);
-      // 여기에 API 호출 로직 추가
+      // [추가된 부분] 가입한 유저 정보를 'registeredUser'라는 키로 임시 저장
+      localStorage.setItem("registeredUser", JSON.stringify(registerData));
+
       alert("회원가입이 완료되었습니다!");
-      navigate("/login"); // 회원가입 성공 후 로그인 페이지로 이동
+      navigate("/login");
+      // 여기에 API 호출 로직 추가
     } else {
       alert("모든 필드를 올바르게 입력해주세요.");
       // 입력 에러 메시지 강제 표시

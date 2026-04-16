@@ -11,7 +11,6 @@ import {
   Label,
   LoginInput,
   Button,
-  ErrorMessage,
   SocialLoginGroup,
   SocialButton,
   AccountRecovery,
@@ -61,32 +60,42 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // 1. 빈값 체크 및 형식 체크 (기존과 동일)
     if (!userEmail || !userPassword) {
       alert("이메일과 비밀번호를 입력하세요.");
       return;
     }
 
-    if (!isEmailValid || !isPasswordValid) {
-      alert("입력 형식을 확인하세요.");
-      return;
-    }
+    // 3. 테스트용 50% 로그인 성공 시뮬레이션
+    const success = Math.random() > 0.5;
 
-    if (
-      userEmail === "dnjxj5741@gmail.com" &&
-      userPassword === "Qkehfdl194673!"
-    ) {
-      localStorage.setItem("isLogin", "true");
-      navigate("/main");
+    if (success) {
+      // [수정된 부분] 회원가입 때 저장했던 정보를 가져옴
+      const registeredUser = JSON.parse(localStorage.getItem("registeredUser"));
+
+      let userName = "";
+
+      // 만약 회원가입했던 이메일과 지금 로그인하려는 이메일이 같다면 가입한 이름을 사용
+      if (registeredUser && registeredUser.email === userEmail) {
+        userName = registeredUser.name;
+      } else {
+        // 회원가입 기록이 없거나 다른 이메일이면 이메일 앞자리 사용(예외처리)
+        userName = userEmail.split("@")[0];
+      }
+
+      // 최종적으로 Header.js가 읽어갈 'user' 정보 생성
+      const userData = {
+        name: userName,
+        email: userEmail,
+      };
+
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      alert(`${userData.name}님 환영합니다!`);
+      window.location.href = "/"; // 메인으로 이동하면서 헤더 갱신
     } else {
       alert("아이디 또는 비밀번호가 틀렸습니다.");
     }
-
-    const loginData = {
-      email: userEmail,
-      password: userPassword,
-    };
-
-    console.log(loginData);
   };
 
   const handleRegisterClick = () => {
@@ -119,14 +128,6 @@ const Login = () => {
             onChange={handleEmailChange}
             validationStatus={isEmailValid}
           />
-          {isEmailValid === "valid" && (
-            <ErrorMessage color="green">올바른 이메일 형식입니다.</ErrorMessage>
-          )}
-          {isEmailValid === "invalid" && (
-            <ErrorMessage color="red">
-              올바른 이메일 형식이 아닙니다.
-            </ErrorMessage>
-          )}
         </InputGroup>
         <InputGroup>
           <Label htmlFor="password">비밀번호</Label>
@@ -157,16 +158,6 @@ const Login = () => {
               아이디 · 비밀번호 찾기
             </AccountRecovery>
           </div>
-          {isPasswordValid === "valid" && (
-            <ErrorMessage color="green">
-              올바른 비밀번호 형식입니다.
-            </ErrorMessage>
-          )}
-          {isPasswordValid === "invalid" && (
-            <ErrorMessage color="red">
-              비밀번호는 최소 8자이며, 문자, 숫자, 특수문자를 포함해야 합니다.
-            </ErrorMessage>
-          )}
         </InputGroup>
         <Button type="submit">로그인</Button>
         <Button type="button" outline onClick={handleRegisterClick}>

@@ -9,7 +9,6 @@ export const LoginContainer = styled.div`
   color: #f0f0f0;
   font-family: "Arial", sans-serif;
   position: absolute; /* 절대 위치 지정 */
-  top: 15%; /* 화면 상단에서 15% 지점에 상단 고정 (조절 가능) */
   left: 50%; /* 왼쪽에서 50% 지점 */
   transform: translateX(-50%); /* X축으로만 중앙 정렬 */
 
@@ -105,6 +104,7 @@ export const FormDescription = styled.p`
   font-size: 14px;
   color: #ccc;
   margin-bottom: 20px;
+  margin-top: -5px;
 `;
 
 export const FindForm = styled.form`
@@ -132,7 +132,7 @@ export const FindInput = styled.input`
   border: 1px solid #3a3a3a;
   border-radius: 8px;
   color: #f0f0f0;
-  font-size: 16px;
+  font-size: 14px;
   box-sizing: border-box;
   transition: border-color 0.3s ease;
 
@@ -157,10 +157,16 @@ export const FindInput = styled.input`
 export const ErrorMessage = styled.p`
   font-size: 12px;
   position: absolute;
-  bottom: -20px; /* InputGroup 하단에서 에러 메시지 위치 조정 */
-  left: 0; /* 왼쪽 정렬 */
+  bottom: -33px;
+
+  /* ❌ 기존 */
+  /* left: 0; */
+
+  /* ✅ 수정 (우측 정렬) */
+  right: 0;
+
   color: ${(props) => props.color || "red"};
-  min-height: 14px; /* 에러 메시지 유무와 상관없이 공간 확보 */
+  min-height: 14px;
 `;
 
 export const Button = styled.button`

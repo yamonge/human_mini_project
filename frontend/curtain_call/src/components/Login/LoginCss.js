@@ -72,18 +72,6 @@ export const LoginInput = styled.input`
     outline: none;
     border-color: #d4af37;
   }
-
-  ${(props) =>
-    props.validationStatus === "valid" &&
-    css`
-      border-color: green;
-    `}
-
-  ${(props) =>
-    props.validationStatus === "invalid" &&
-    css`
-      border-color: red;
-    `}
 `;
 
 export const AccountRecovery = styled.a`
@@ -96,13 +84,6 @@ export const AccountRecovery = styled.a`
   &:hover {
     cursor: pointer;
   }
-`;
-
-export const ErrorMessage = styled.p`
-  font-size: 12px;
-  margin-top: 8px;
-  text-align: right;
-  color: ${(props) => props.color || "red"};
 `;
 
 export const Button = styled.button`

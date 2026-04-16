@@ -102,7 +102,7 @@ export const FindPasswordLink = styled.a`
 export const ErrorMessage = styled.p`
   font-size: 12px;
   position: absolute;
-  bottom: -18px;
+  bottom: -33px;
   right: 0;
   color: ${(props) => props.color || "red"};
 `;
