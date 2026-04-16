@@ -11,10 +11,9 @@ import {
   Label,
   LoginInput,
   Button,
-  ErrorMessage,
   SocialLoginGroup,
   SocialButton,
-  FindPasswordLink,
+  AccountRecovery,
   OrDivider,
 } from "../Login/LoginCss";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -23,8 +22,8 @@ const Login = () => {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [isEmailValid, setIsEmailValid] = useState("null");
+  const [isPasswordValid, setIsPasswordValid] = useState("null");
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate(); // useNavigate 훅 사용
@@ -49,28 +48,66 @@ const Login = () => {
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setUserEmail(value);
-    setEmailError(validateEmail(value));
+    setIsEmailValid(validateEmail(value));
   };
 
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setUserPassword(value);
-    setPasswordError(validatePassword(value));
+    setIsPasswordValid(validatePassword(value));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const loginData = {
-      email: userEmail,
-      password: userPassword,
-    };
+    // 1. 빈값 체크 및 형식 체크 (기존과 동일)
+    if (!userEmail || !userPassword) {
+      alert("이메일과 비밀번호를 입력하세요.");
+      return;
+    }
 
-    console.log(loginData);
+    // 3. 테스트용 50% 로그인 성공 시뮬레이션
+    const success = Math.random() > 0.5;
+
+    if (success) {
+      // [수정된 부분] 회원가입 때 저장했던 정보를 가져옴
+      const registeredUser = JSON.parse(localStorage.getItem("registeredUser"));
+
+      let userName = "";
+
+      // 만약 회원가입했던 이메일과 지금 로그인하려는 이메일이 같다면 가입한 이름을 사용
+      if (registeredUser && registeredUser.email === userEmail) {
+        userName = registeredUser.name;
+      } else {
+        // 회원가입 기록이 없거나 다른 이메일이면 이메일 앞자리 사용(예외처리)
+        userName = userEmail.split("@")[0];
+      }
+
+      // 최종적으로 Header.js가 읽어갈 'user' 정보 생성
+      const userData = {
+        name: userName,
+        email: userEmail,
+      };
+
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      alert(`${userData.name}님 환영합니다!`);
+      window.location.href = "/"; // 메인으로 이동하면서 헤더 갱신
+    } else {
+      alert("아이디 또는 비밀번호가 틀렸습니다.");
+    }
   };
 
   const handleRegisterClick = () => {
-    navigate("/register"); // 회원가입 페이지로 이동
+    navigate("/signup"); // 회원가입 페이지로 이동
+  };
+
+  const handleClose = () => {
+    navigate("/"); // 메인으로 이동
+  };
+
+  const handleAccountRecovery = () => {
+    navigate("/account-recovery");
   };
 
   return (
@@ -78,7 +115,7 @@ const Login = () => {
       <Header>
         <Title>로그인</Title>
         <Subtitle>뮤지컬 커뮤니티에 오신 것을 환영합니다</Subtitle>
-        <CloseButton>&times;</CloseButton>
+        <CloseButton onClick={handleClose}>&times;</CloseButton>
       </Header>
       <LoginForm onSubmit={handleSubmit}>
         <InputGroup>
@@ -89,16 +126,8 @@ const Login = () => {
             placeholder="example@email.com"
             value={userEmail}
             onChange={handleEmailChange}
-            validationStatus={emailError}
+            validationStatus={isEmailValid}
           />
-          {emailError === "valid" && (
-            <ErrorMessage color="green">올바른 이메일 형식입니다.</ErrorMessage>
-          )}
-          {emailError === "invalid" && (
-            <ErrorMessage color="red">
-              올바른 이메일 형식이 아닙니다.
-            </ErrorMessage>
-          )}
         </InputGroup>
         <InputGroup>
           <Label htmlFor="password">비밀번호</Label>
@@ -109,7 +138,7 @@ const Login = () => {
               placeholder="••••••••"
               value={userPassword}
               onChange={handlePasswordChange}
-              validationStatus={passwordError}
+              validationStatus={isPasswordValid}
               style={{ paddingRight: "40px" }}
             />
             <span
@@ -125,44 +154,36 @@ const Login = () => {
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
-            <FindPasswordLink href="#">아이디 · 비밀번호 찾기</FindPasswordLink>
+            <AccountRecovery onClick={handleAccountRecovery}>
+              아이디 · 비밀번호 찾기
+            </AccountRecovery>
           </div>
-          {passwordError === "valid" && (
-            <ErrorMessage color="green">
-              올바른 비밀번호 형식입니다.
-            </ErrorMessage>
-          )}
-          {passwordError === "invalid" && (
-            <ErrorMessage color="red">
-              비밀번호는 최소 8자이며, 문자, 숫자, 특수문자를 포함해야 합니다.
-            </ErrorMessage>
-          )}
         </InputGroup>
         <Button type="submit">로그인</Button>
         <Button type="button" outline onClick={handleRegisterClick}>
           회원가입
         </Button>{" "}
         {/* onClick 이벤트 추가 */}
-        <OrDivider>또는</OrDivider>
-        <SocialLoginGroup>
-          <SocialButton social="google">
-            <img
-              src="https://img.icons8.com/color/48/000000/google-logo.png"
-              alt="Google"
-              style={{ width: "20px", marginRight: "8px" }}
-            />
-            Google
-          </SocialButton>
-          <SocialButton social="github">
-            <img
-              src="https://img.icons8.com/ios-filled/50/000000/github.png"
-              alt="GitHub"
-              style={{ width: "20px", marginRight: "8px" }}
-            />
-            GitHub
-          </SocialButton>
-        </SocialLoginGroup>
       </LoginForm>
+      <OrDivider>또는</OrDivider>
+      <SocialLoginGroup>
+        <SocialButton social="google">
+          <img
+            src="https://img.icons8.com/color/48/000000/google-logo.png"
+            alt="Google"
+            style={{ width: "20px", marginRight: "8px" }}
+          />
+          Google
+        </SocialButton>
+        <SocialButton social="github">
+          <img
+            src="https://img.icons8.com/ios-filled/50/000000/github.png"
+            alt="GitHub"
+            style={{ width: "20px", marginRight: "8px" }}
+          />
+          GitHub
+        </SocialButton>
+      </SocialLoginGroup>
       <div
         style={{
           textAlign: "center",
