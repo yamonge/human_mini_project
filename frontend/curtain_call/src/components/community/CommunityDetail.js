@@ -4,6 +4,30 @@ import { FiChevronLeft, FiSend } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 import { communityPosts } from "./CommunityList";
 
+// 시간 계산 함수
+const formatRelativeTime = (dateString) => {
+  if (!dateString) return "";
+
+  // 날짜 형식의 온점(.)을 하이픈(-)으로 바꾸고 공백이 있다면 ISO 형식에 맞게 처리
+  const date = new Date(dateString.replace(/\./g, "-"));
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+
+  if (diffInSeconds < 60) return "방금 전";
+
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes}분 전`;
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours}시간 전`;
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 7) return `${diffInDays}일 전`;
+
+  // 7일 이상 지나면 원래 날짜 표시
+  return dateString.split(" ")[0]; // 시간 정보 제외하고 날짜만 표시
+};
+
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
@@ -287,10 +311,13 @@ const CommunityDetail = ({ userId = 1 }) => {
   const handleCommentSubmit = () => {
     if (commentInput.trim() === "") return;
 
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+
     const newComment = {
       id: Date.now(),
       author: "나(User)",
-      date: new Date().toLocaleDateString("ko-KR").replace(/ /g, ""),
+      date: formattedDate,
       content: commentInput,
       profileColor: "#c9a84c",
     };
@@ -342,7 +369,9 @@ const CommunityDetail = ({ userId = 1 }) => {
               <AuthorInfo>
                 <AuthorName>{post.author}</AuthorName>
                 <PostDate>
-                  {post.createdAt || post.created_at || post.date}
+                  {formatRelativeTime(
+                    post.createdAt || post.created_at || post.date,
+                  )}
                 </PostDate>
               </AuthorInfo>
             </AuthorSection>
@@ -382,7 +411,7 @@ const CommunityDetail = ({ userId = 1 }) => {
                     <CommentMeta>
                       <AuthorDateBox>
                         <CommentAuthor>{comment.author}</CommentAuthor>
-                        <PostDate>{comment.date}</PostDate>
+                        <PostDate>{formatRelativeTime(comment.date)}</PostDate>
                       </AuthorDateBox>
 
                       {comment.author === "나(User)" && (

@@ -194,11 +194,15 @@ const CommunityWrite = ({ onSave, userId = 1 }) => {
       return;
     }
 
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+
     const postData = {
       userId: Number(userId), // Long 타입을 위해 숫자로 변환
       title: title,
       content: content,
       category: selectedCategory,
+      createdAt: formattedDate,
     };
     console.log("백엔드로 보낼 데이터:", postData);
 

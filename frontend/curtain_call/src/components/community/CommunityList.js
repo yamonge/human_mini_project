@@ -8,6 +8,30 @@ import {
 } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 
+// 시간 계산 함수
+const formatRelativeTime = (dateString) => {
+  if (!dateString) return "";
+
+  // 날짜 형식의 온점(.)을 하이픈(-)으로 바꾸고 공백이 있다면 ISO 형식에 맞게 처리
+  const date = new Date(dateString.replace(/\./g, "-"));
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+
+  if (diffInSeconds < 60) return "방금 전";
+
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes}분 전`;
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours}시간 전`;
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 7) return `${diffInDays}일 전`;
+
+  // 7일 이상 지나면 원래 날짜 표시
+  return dateString.split(" ")[0]; // 시간 정보 제외하고 날짜만 표시
+};
+
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
@@ -392,7 +416,8 @@ const CommunityList = ({ posts = communityPosts }) => {
       title: post.title ?? "",
       content: post.content ?? post.preview ?? "",
       author: post.author ?? post.userName ?? "익명",
-      date: post.date ?? post.createdAt ?? post.created_at ?? "",
+      rawDate: post.date ?? post.createdAt ?? post.created_at ?? "",
+      // date: post.date ?? post.createdAt ?? post.created_at ?? "",
       comments: Number(post.comments ?? post.commentCount ?? 0),
     }));
   }, [displayPosts]);
@@ -415,8 +440,8 @@ const CommunityList = ({ posts = communityPosts }) => {
 
     return copied.sort((a, b) => {
       if (sortType === "최신순") {
-        const dateA = new Date(String(a.date || "").replace(/\./g, "-"));
-        const dateB = new Date(String(b.date || "").replace(/\./g, "-"));
+        const dateA = new Date(String(a.rawDate || "").replace(/\./g, "-"));
+        const dateB = new Date(String(b.rawDate || "").replace(/\./g, "-"));
         return dateB - dateA;
       }
 
@@ -509,7 +534,17 @@ const CommunityList = ({ posts = communityPosts }) => {
                   <PostMeta>
                     <AuthorDate>
                       <span>@{post.author}</span>
-                      <span>{post.date}</span>
+                      <span>
+                        {formatRelativeTime(post.rawDate).includes("전") ||
+                        formatRelativeTime(post.rawDate) === "방금 전" ? (
+                          <>
+                            {post.rawDate.split(" ")[0]} (
+                            {formatRelativeTime(post.rawDate)})
+                          </>
+                        ) : (
+                          <>{formatRelativeTime(post.rawDate)}</>
+                        )}
+                      </span>
                     </AuthorDate>
 
                     <CommentCount>
