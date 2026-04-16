@@ -1,9 +1,34 @@
 import React, { useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { FiChevronLeft, FiSend } from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
+import { communityPosts } from "./CommunityList";
+
+// 시간 계산 함수
+const formatRelativeTime = (dateString) => {
+  if (!dateString) return "";
+
+  // 날짜 형식의 온점(.)을 하이픈(-)으로 바꾸고 공백이 있다면 ISO 형식에 맞게 처리
+  const date = new Date(dateString.replace(/\./g, "-"));
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+
+  if (diffInSeconds < 60) return "방금 전";
+
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes}분 전`;
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours}시간 전`;
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 7) return `${diffInDays}일 전`;
+
+  // 7일 이상 지나면 원래 날짜 표시
+  return dateString.split(" ")[0]; // 시간 정보 제외하고 날짜만 표시
+};
 
 const GlobalStyle = createGlobalStyle`
-
   body {
     margin: 0;
     padding: 0;
@@ -110,6 +135,15 @@ const PostContent = styled.div`
   font-size: 16px;
   line-height: 1.8;
   white-space: pre-wrap;
+`;
+
+const EmptyMessage = styled.div`
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 18px;
 `;
 
 const CommentSection = styled.div`
@@ -237,22 +271,27 @@ const DeleteButton = styled.button`
   }
 `;
 
-const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
-  // 예시 데이터 (실제로는 post 객체에서 받아옴)
-  // 상태 관리 (기존 댓글 + 입력 필드)
+const CommunityDetail = ({ userId = 1 }) => {
+  const navigate = useNavigate();
+  const { postId } = useParams();
+
+  const post = communityPosts.find(
+    (item) => Number(item.postId ?? item.id) === Number(postId),
+  );
+
   const [commentInput, setCommentInput] = useState("");
   const [comments, setComments] = useState([
     {
-      commentId: 1,
+      id: 1,
       author: "같이갈래요",
-      createdAt: "2026.04.08",
+      date: "2026.04.08",
       content: "저 관심 있어요! 쪽지 보내볼게요 :)",
       profileColor: "#00C471",
     },
     {
-      commentId: 2,
+      id: 2,
       author: "위키드러버",
-      createdAt: "2026.04.08",
+      date: "2026.04.08",
       content: "@같이갈래요 쪽지 확인했어요! 답장 드릴게요~",
       profileColor: "#ff4d4d",
     },
@@ -263,54 +302,58 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
     "토크 공간": "#0F766E",
     "Q&A": "#059669",
     공연메이트: "#0369A1",
+    "공연 메이트": "#0369A1",
     "티켓 양도": "#DC2626",
     공연후기: "#D97706",
+    "공연 후기": "#D97706",
   };
 
-  // 댓글 등록 함수
   const handleCommentSubmit = () => {
-    if (commentInput.trim() === "") return; // 빈 내용 방지
+    if (commentInput.trim() === "") return;
 
-    const commentData = {
-      userId: userId, // 실제로는 로그인한 유저 ID
-      content: commentInput,
-    };
-
-    console.log("백엔드로 보낼 댓글 데이터:", commentData);
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
 
     const newComment = {
-      commentId: Date.now(), // 고유 ID 생성
-      userId: userId,
-      author: "나(User)", // 실제 구현 시 로그인한 사용자명
-      createdAt: new Date().toLocaleDateString(), // 오늘 날짜
+      id: Date.now(),
+      author: "나(User)",
+      date: formattedDate,
       content: commentInput,
       profileColor: "#c9a84c",
     };
 
-    setComments([...comments, newComment]); // 기존 댓글 리스트에 추가
-
-    setCommentInput(""); // 입력창 초기화
+    setComments([...comments, newComment]);
+    setCommentInput("");
   };
 
-  // 댓글 삭제 함수
-
-  const handleDeleteComment = (targetCommentId) => {
-    console.log("삭제 시도 ID:", targetCommentId);
+  const handleDeleteComment = (id) => {
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
-      setComments(
-        comments.filter((comment) => comment.commentId !== targetCommentId),
-      );
+      setComments(comments.filter((comment) => comment.id !== id));
     }
   };
 
-  if (!post) return null;
+  if (!post) {
+    return (
+      <>
+        <GlobalStyle />
+        <DetailWrapper>
+          <DetailLayout>
+            <BackButton onClick={() => navigate("/community")}>
+              <FiChevronLeft /> 커뮤니티로 돌아가기
+            </BackButton>
+            <EmptyMessage>존재하지 않는 게시글입니다.</EmptyMessage>
+          </DetailLayout>
+        </DetailWrapper>
+      </>
+    );
+  }
 
   return (
     <>
       <GlobalStyle />
       <DetailWrapper>
         <DetailLayout>
-          <BackButton onClick={onBackClick}>
+          <BackButton onClick={() => navigate("/community")}>
             <FiChevronLeft /> 커뮤니티로 돌아가기
           </BackButton>
 
@@ -320,16 +363,19 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
             </CategoryTag>
             <PostTitle>{post.title}</PostTitle>
             <AuthorSection>
-              <ProfileCircle color="#ff4d4d">위</ProfileCircle>
+              <ProfileCircle color="#ff4d4d">
+                {(post.author || "익명").substring(0, 1)}
+              </ProfileCircle>
               <AuthorInfo>
                 <AuthorName>{post.author}</AuthorName>
-                <PostDate>{post.createdAt}</PostDate>
+                <PostDate>
+                  {formatRelativeTime(
+                    post.createdAt || post.created_at || post.date,
+                  )}
+                </PostDate>
               </AuthorInfo>
             </AuthorSection>
-            <PostContent>
-              {post.content || post.preview} (상세 내용이 들어가는
-              영역입니다...)
-            </PostContent>
+            <PostContent>{post.content}</PostContent>
           </PostContainer>
 
           <CommentSection>
@@ -356,7 +402,7 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
 
             <CommentList>
               {comments.map((comment) => (
-                <CommentItem key={comment.commentId}>
+                <CommentItem key={comment.id}>
                   <ProfileCircle color={comment.profileColor}>
                     {comment.author.substring(0, 1)}
                   </ProfileCircle>
@@ -365,13 +411,12 @@ const CommunityDetail = ({ post, onBackClick, userId = 1 }) => {
                     <CommentMeta>
                       <AuthorDateBox>
                         <CommentAuthor>{comment.author}</CommentAuthor>
-                        <PostDate>{comment.createdAt}</PostDate>
+                        <PostDate>{formatRelativeTime(comment.date)}</PostDate>
                       </AuthorDateBox>
 
-                      {/* 삭제 버튼: 작성자가 '나(User)'일 때만 노출 */}
-                      {comment.userId === userId && (
+                      {comment.author === "나(User)" && (
                         <DeleteButton
-                          onClick={() => handleDeleteComment(comment.commentId)}
+                          onClick={() => handleDeleteComment(comment.id)}
                         >
                           삭제
                         </DeleteButton>

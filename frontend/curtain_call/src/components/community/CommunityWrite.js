@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiChevronLeft } from "react-icons/fi";
 import styled, { createGlobalStyle } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 // 스타일
 const GlobalStyle = createGlobalStyle`
@@ -172,7 +173,8 @@ const ActionButton = styled.button`
   }
 `;
 
-const CommunityWrite = ({ onBackClick, onSave, userId = 1 }) => {
+const CommunityWrite = ({ onSave, userId = 1 }) => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -192,19 +194,25 @@ const CommunityWrite = ({ onBackClick, onSave, userId = 1 }) => {
       return;
     }
 
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+
     const postData = {
       userId: Number(userId), // Long 타입을 위해 숫자로 변환
       title: title,
       content: content,
       category: selectedCategory,
+      createdAt: formattedDate,
     };
     console.log("백엔드로 보낼 데이터:", postData);
 
     // 부모 컴포넌트의 저장 로직 실행
     if (onSave) {
       onSave(postData);
-      alert("게시글이 등록되었습니다.");
     }
+
+    alert("게시글이 등록되었습니다.");
+    navigate("/community");
   };
 
   return (
@@ -212,7 +220,7 @@ const CommunityWrite = ({ onBackClick, onSave, userId = 1 }) => {
       <GlobalStyle />
       <PageWrapper>
         <PageLayout>
-          <BackLink onClick={onBackClick}>
+          <BackLink onClick={() => navigate("/community")}>
             <FiChevronLeft /> 커뮤니티로 돌아가기
           </BackLink>
 
@@ -260,7 +268,10 @@ const CommunityWrite = ({ onBackClick, onSave, userId = 1 }) => {
             </InputGroup>
 
             <ButtonRow>
-              <ActionButton variant="secondary" onClick={onBackClick}>
+              <ActionButton
+                variant="secondary"
+                onClick={() => navigate("/community")}
+              >
                 취소
               </ActionButton>
               <ActionButton variant="primary" onClick={handleSubmit}>
