@@ -29,6 +29,7 @@ public class CastService {
     public CastResDto saveCast(Long musicalId, CastReqDto dto) {
         // TODO: musicalRepository.findById() 로 뮤지컬 조회
         // TODO: Cast 엔티티 생성 후 저장
+        // TODO: 외부 API에서 등록 함으로 작업X
         return null;
     }
 
@@ -39,6 +40,7 @@ public class CastService {
     @Transactional(readOnly = true)
     public List<CastResDto> getCastList(Long musicalId) {
         // TODO: findByMusicalMusicalIdOrderByCastNameAsc() 사용
+        // TODO: 뮤지컬 엔티티에 String저장으로 변경되어 작업X
         return null;
     }
 
@@ -48,5 +50,6 @@ public class CastService {
      */
     public void deleteCast(Long castId) {
         // TODO: findById() → delete()
+        // TODO: 외부 API임으로 작업X
     }
 }
