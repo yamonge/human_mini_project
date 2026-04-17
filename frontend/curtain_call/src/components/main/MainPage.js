@@ -3,20 +3,37 @@ import styled from "styled-components";
 import HeroSection from "./HeroSection";
 import MusicalListSection from "./MusicalListSection";
 import CommunityHotSection from "./CommunityHotSection";
-import { musicalMockData } from "../PRO/MusicalList";
+import AxiosApi from "../../api/AxiosApi";
 
 const MainPage = () => {
   const [musicals, setMusicals] = useState([]);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 포스트 hot 조회
+  const fetchPosts = async () => {
+    const response = await AxiosApi.getPostList();
+    if (response.success) {
+      // TODO: 포스트 hot 조회 로직 구현 4개만
+      const hotPosts = response.data
+        .sort((a, b) => b.comments - a.comments)
+        .slice(0, 4);
+      setPosts(hotPosts);
+    } else {
+      alert(response || "포스트 hot 조회 실패:");
+    }
+  };
+
   useEffect(() => {
     const fetchMusicals = async () => {
-      const response = await musicalMockData();
-      setMusicals(response.data);
+      const response = await AxiosApi.getMusicalList();
+      if (response.success) {
+        setMusicals(response.data ?? []);
+      }
+      setLoading(false);
     };
     fetchMusicals();
-    setLoading(false);
+    fetchPosts();
   }, []);
 
   if (loading) {

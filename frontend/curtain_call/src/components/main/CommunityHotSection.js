@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { communityPosts } from "../community/CommunityList";
 
 const categoryStyleMap = {
   "티켓 양도": {
@@ -43,17 +42,11 @@ const categoryStyleMap = {
   },
 };
 
-const CommunityHotSection = () => {
+const CommunityHotSection = ({ posts }) => {
   const navigate = useNavigate();
 
   const hotPosts = useMemo(() => {
-    return [...communityPosts]
-      .sort((a, b) => {
-        const aCount = Number(a.comments ?? a.commentCount ?? 0);
-        const bCount = Number(b.comments ?? b.commentCount ?? 0);
-        return bCount - aCount;
-      })
-      .slice(0, 4);
+    return [...posts];
   }, []);
 
   const handleMovePostDetail = (postId) => {
@@ -70,7 +63,14 @@ const CommunityHotSection = () => {
       <Title>커뮤니티 HOT 게시물</Title>
 
       {hotPosts.length === 0 ? (
-        <EmptyBox>아직 커뮤니티 게시글이 없습니다</EmptyBox>
+        <>
+          <EmptyBox>아직 커뮤니티 게시글이 없습니다</EmptyBox>
+          <ButtonRow>
+            <MoreButton onClick={handleMoveCommunityPage}>
+              커뮤니티 전체 게시물 보기 →
+            </MoreButton>
+          </ButtonRow>
+        </>
       ) : (
         <>
           <Board>

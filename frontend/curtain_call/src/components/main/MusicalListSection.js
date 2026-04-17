@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 import MusicalCard from "./MusicalCard";
 import Pagination from "../common/Pagination";
 
-const TABS = ["전체", "공연중", "공연예정", "공연종료"];
+const TABS = ["전체", "공연중", "공연예정", "공연완료"];
 const PAGE_SIZE = 8;
 
 const tabDescriptionMap = {
   전체: "현재 상영 중이거나 예정된 국내 뮤지컬 공연을 만나보세요",
   공연중: "지금 바로 관람 가능한 국내 뮤지컬 공연입니다",
   공연예정: "곧 시작될 국내 뮤지컬 공연을 확인해보세요",
-  공연종료: "공연이 종료된 국내 뮤지컬 작품입니다",
+  공연완료: "공연이 종료된 국내 뮤지컬 작품입니다",
 };
 
 const MusicalListSection = ({ musicals }) => {
