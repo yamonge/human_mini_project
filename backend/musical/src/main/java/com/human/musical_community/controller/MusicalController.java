@@ -26,6 +26,7 @@ public class MusicalController {
     @PostMapping
     public ResponseEntity<ApiResponse<MusicalResDto>> saveMusical(@RequestBody MusicalReqDto dto) {
         // TODO: musicalService.saveMusical() 구현 후 아래 주석 제거
+        // TODO: kopis 스케쥴러에서 자동 등록
         // return ResponseEntity.ok(ApiResponse.ok("뮤지컬 등록 성공", musicalService.saveMusical(dto)));
         return ResponseEntity.ok(ApiResponse.fail("TODO: MusicalService.saveMusical() 구현 필요"));
     }
@@ -34,8 +35,7 @@ public class MusicalController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<MusicalResDto>>> getMusicalList() {
         // TODO: musicalService.getMusicalList() 구현 후 아래 주석 제거
-        // return ResponseEntity.ok(ApiResponse.ok("뮤지컬 목록 조회 성공", musicalService.getMusicalList()));
-        return ResponseEntity.ok(ApiResponse.fail("TODO: MusicalService.getMusicalList() 구현 필요"));
+        return ResponseEntity.ok(ApiResponse.ok("뮤지컬 목록 조회 성공", musicalService.getMusicalList()));
     }
 
     @Operation(summary = "뮤지컬 단건 조회")
@@ -44,8 +44,7 @@ public class MusicalController {
             @Parameter(description = "뮤지컬 ID", example = "1")
             @PathVariable Long musicalId) {
         // TODO: musicalService.getMusical() 구현 후 아래 주석 제거
-        // return ResponseEntity.ok(ApiResponse.ok("뮤지컬 조회 성공", musicalService.getMusical(musicalId)));
-        return ResponseEntity.ok(ApiResponse.fail("TODO: MusicalService.getMusical() 구현 필요"));
+        return ResponseEntity.ok(ApiResponse.ok("뮤지컬 조회 성공", musicalService.getMusical(musicalId)));
     }
 
     @Operation(summary = "공연 상태별 조회", description = "공연중 / 공연예정 / 공연완료")
@@ -54,6 +53,7 @@ public class MusicalController {
             @Parameter(description = "공연 상태", example = "공연중")
             @PathVariable MusicalStatus status) {
         // TODO: musicalService.getMusicalListByStatus() 구현 후 아래 주석 제거
+        // TODO: 프론트에서 필터링 함으로 작업X
         // return ResponseEntity.ok(ApiResponse.ok("상태별 뮤지컬 조회 성공", musicalService.getMusicalListByStatus(status)));
         return ResponseEntity.ok(ApiResponse.fail("TODO: MusicalService.getMusicalListByStatus() 구현 필요"));
     }
@@ -64,8 +64,7 @@ public class MusicalController {
             @Parameter(description = "검색 키워드", example = "레미제라블")
             @RequestParam String keyword) {
         // TODO: musicalService.searchMusical() 구현 후 아래 주석 제거
-        // return ResponseEntity.ok(ApiResponse.ok("뮤지컬 검색 성공", musicalService.searchMusical(keyword)));
-        return ResponseEntity.ok(ApiResponse.fail("TODO: MusicalService.searchMusical() 구현 필요"));
+        return ResponseEntity.ok(ApiResponse.ok("뮤지컬 검색 성공", musicalService.searchMusical(keyword)));
     }
 
     @Operation(summary = "뮤지컬 수정")
@@ -73,6 +72,7 @@ public class MusicalController {
     public ResponseEntity<ApiResponse<MusicalResDto>> updateMusical(
             @PathVariable Long musicalId, @RequestBody MusicalReqDto dto) {
         // TODO: musicalService.updateMusical() 구현 후 아래 주석 제거
+        // TODO: 외부 API임으로 수정X
         // return ResponseEntity.ok(ApiResponse.ok("뮤지컬 수정 성공", musicalService.updateMusical(musicalId, dto)));
         return ResponseEntity.ok(ApiResponse.fail("TODO: MusicalService.updateMusical() 구현 필요"));
     }
@@ -81,6 +81,7 @@ public class MusicalController {
     @DeleteMapping("/{musicalId}")
     public ResponseEntity<ApiResponse<Void>> deleteMusical(@PathVariable Long musicalId) {
         // TODO: musicalService.deleteMusical() 구현 후 아래 주석 제거
+        // TODO: 외부 API임으로 수정X
         // musicalService.deleteMusical(musicalId);
         // return ResponseEntity.ok(ApiResponse.ok("뮤지컬 삭제 성공"));
         return ResponseEntity.ok(ApiResponse.fail("TODO: MusicalService.deleteMusical() 구현 필요"));

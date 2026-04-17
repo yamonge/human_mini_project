@@ -21,6 +21,7 @@ public class MusicalResDto {
     private MusicalStatus status;
     private String venue;
     private String crew;
+    private String casts;
     private String runtime;
     private String ageLimit;
     private String posterUrl;
@@ -45,6 +46,7 @@ public class MusicalResDto {
                 .status(m.getStatus())
                 .venue(m.getVenue())
                 .crew(m.getCrew())
+                .casts(m.getCasts())
                 .runtime(m.getRuntime())
                 .ageLimit(m.getAgeLimit())
                 .posterUrl(m.getPosterUrl())

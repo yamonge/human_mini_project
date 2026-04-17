@@ -24,6 +24,9 @@ public class Musical {
     @Column(name = "musical_id")
     private Long musicalId;
 
+    @Column(name = "kopis_id", unique = true, length =  20)
+    private String kopisId;
+
     @Column(nullable = false, length = 200)
     private String title;               // 뮤지컬 제목
 
@@ -49,6 +52,9 @@ public class Musical {
 
     @Column(length = 500)
     private String crew;                // 제작진
+
+    @Column(length = 500)
+    private String casts;
 
     @Column(length = 50)
     private String runtime;             // 공연 시간 (예: 150분)

@@ -1,7 +1,10 @@
 package com.human.musical_community.service;
 
+import com.human.musical_community.dto.request.FindIdReqDto;
+import com.human.musical_community.dto.request.FindPwReqDto;
 import com.human.musical_community.dto.request.LoginReqDto;
 import com.human.musical_community.dto.request.SignUpReqDto;
+import com.human.musical_community.dto.response.FindIdResDto;
 import com.human.musical_community.dto.response.LoginResDto;
 import com.human.musical_community.entity.User;
 import com.human.musical_community.repository.UserRepository;
@@ -36,7 +39,8 @@ public class AuthService {
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))  // BCrypt 암호화
                 .name(dto.getName())
-                .isAdmin(false)
+                .birthDate(dto.getBirthDate())
+                .isAdmin(0)
                 .build();
 
         userRepository.save(user);
@@ -50,6 +54,8 @@ public class AuthService {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
 
+        System.out.println("service : " + user);
+
         // BCrypt 비밀번호 검증
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
@@ -62,7 +68,25 @@ public class AuthService {
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .isAdmin(user.isAdmin())
+                .isAdmin(user.getIsAdmin() == 1)
                 .build();
+    }
+
+    public FindIdResDto findId(FindIdReqDto dto){
+        User user = userRepository.findByNameAndBirthDate(dto.getName(), dto.getBirthDate())
+                .orElseThrow(() -> new IllegalArgumentException("해당 정보에대한 이메일이 존재하지 않습니다."));
+
+        return FindIdResDto.builder()
+                .email(user.getEmail())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public void findPw(FindPwReqDto dto) {
+        boolean exists = userRepository.existsByNameAndEmail(dto.getName(), dto.getEmail());
+        if (!exists) {
+            throw new IllegalArgumentException("해당 정보에 대한 계정이 존재하지 않습니다.");
+        }
     }
 }

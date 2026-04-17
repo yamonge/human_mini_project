@@ -17,6 +17,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env
 
 npm-debug.log*
 yarn-debug.log*
@@ -26,3 +27,8 @@ yarn-error.log*
 /src/App.css
 /src/index.js
 /src/index.css
+/src/components/AtLayout.js
+/src/components/MainLayout.js
+/src/components/AuthLayout.js
+/src/index.css
+yarn.lock

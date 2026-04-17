@@ -16,4 +16,5 @@ public interface MusicalRepository extends JpaRepository<Musical, Long> {
     List<Musical> findByStatusOrderByStartDateAsc(MusicalStatus status);
 
     // TODO: 필요한 쿼리 메서드를 추가하세요
+    boolean existsByKopisId(String kopisId);
 }
