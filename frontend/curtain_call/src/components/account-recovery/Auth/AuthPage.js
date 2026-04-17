@@ -15,6 +15,7 @@ import {
   Button,
   ErrorMessage,
 } from "./AuthPageCss";
+import AxiosApi from "../../../api/AxiosApi";
 
 const FindAccount = () => {
   const location = useLocation();
@@ -54,7 +55,7 @@ const FindAccount = () => {
   };
 
   // ✅ 아이디 찾기 폼 제출 핸들러
-  const handleFindId = (e) => {
+  const handleFindId = async (e) => {
     e.preventDefault(); // 기본 폼 제출 동작 방지
 
     // 1. 빈값 체크
@@ -69,29 +70,56 @@ const FindAccount = () => {
     }
 
     // 3. 정상적인 경우 (실제로는 서버 통신 필요)
-    // 50% 확률로 성공 또는 실패 시뮬레이션
-    const success = Math.random() > 0.5;
+    // TODO: userData 객체 생성
+    const userData = {
+      name: id_name,
+      birthDate: birth_date,
+    };
 
-    // 아이디 찾기 결과 페이지로 이동하며 성공 여부 전달
-    navigate("/id-result", {
-      state: { isSuccess: success },
-    });
+    // TODO: API 호출
+    const response = await AxiosApi.findId(userData);
+    if (response.success) {
+      navigate("/id-result", {
+        state: {
+          isSuccess: true,
+          email: response.data.email,
+          createdAt: response.data.createdAt,
+        },
+      });
+    } else {
+      alert(response);
+      return;
+    }
   };
 
   // ✅ 비밀번호 찾기 폼 제출 핸들러
-  const handleFindPw = (e) => {
-    e.preventDefault(); // 기본 폼 제출 동작 방지
+  const handleFindPw = async (e) => {
+    e.preventDefault();
 
-    // 이름과 이메일 모두 유효한 경우
-    if (validateName(pw_name) && validateEmail(email)) {
-      const success = Math.random() > 0.5; // 50% 확률로 성공 또는 실패 시뮬레이션
+    if (!pw_name || !email) {
+      alert("모든 항목을 입력해주세요");
+      return;
+    }
 
-      // 비밀번호 찾기 결과 페이지로 이동하며 성공 여부 전달
+    if (!validateName(pw_name) || !validateEmail(email)) {
+      alert("입력 형식을 확인해주세요.");
+      return;
+    }
+
+    const userData = {
+      name: pw_name,
+      email: email,
+    };
+
+    const response = await AxiosApi.findPw(userData);
+    if (response.success) {
       navigate("/password-result", {
-        state: { isSuccess: success },
+        state: { isSuccess: true },
       });
     } else {
-      alert("입력 형식을 확인해주세요."); // 유효성 검사 실패 시 알림
+      navigate("/password-result", {
+        state: { isSuccess: false },
+      });
     }
   };
 

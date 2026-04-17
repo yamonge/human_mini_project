@@ -1,6 +1,7 @@
 package com.human.musical_community.controller;
 
 import com.human.musical_community.dto.request.FindIdReqDto;
+import com.human.musical_community.dto.request.FindPwReqDto;
 import com.human.musical_community.dto.request.LoginReqDto;
 import com.human.musical_community.dto.request.SignUpReqDto;
 import com.human.musical_community.dto.response.ApiResponse;
@@ -68,5 +69,15 @@ public class AuthController {
     public ResponseEntity<ApiResponse<FindIdResDto>> findId(@RequestBody FindIdReqDto dto){
         FindIdResDto findRes = authService.findId(dto);
         return ResponseEntity.ok(ApiResponse.ok("찾기 성공", findRes));
+    }
+
+    @Operation(
+            summary = "비밀번호 찾기",
+            description = "이름과 이메일을 받아 일치하는 계정이 있는지 확인"
+    )
+    @PostMapping("/findPw")
+    public ResponseEntity<ApiResponse<Void>> findPw(@RequestBody FindPwReqDto dto) {
+        authService.findPw(dto);
+        return ResponseEntity.ok(ApiResponse.ok("비밀번호 찾기 성공"));
     }
 }
