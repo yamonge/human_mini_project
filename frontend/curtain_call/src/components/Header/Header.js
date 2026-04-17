@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import * as S from "./HeaderCss";
 import { Search, ChevronDown, LogOut } from "lucide-react";
 import logo from "../img/logo.png";
-import { musicalMockData } from "../PRO/MusicalList";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -29,23 +28,11 @@ const Header = () => {
   };
 
   const handleSearch = () => {
-    const keyword = searchKeyword.trim().toLowerCase();
-
+    const keyword = searchKeyword.trim();
     if (!keyword) return;
 
-    const matchedMusical = musicalMockData.find((musical) =>
-      String(musical.title || "")
-        .toLowerCase()
-        .includes(keyword),
-    );
-
-    if (matchedMusical) {
-      navigate(`/musicals/${matchedMusical.musicalId}`);
-      setSearchKeyword("");
-      return;
-    }
-
-    alert("일치하는 뮤지컬을 찾을 수 없습니다.");
+    navigate("/musicals", { state: { searchKeyword: keyword } });
+    setSearchKeyword("");
   };
 
   const handleSearchKeyDown = (e) => {

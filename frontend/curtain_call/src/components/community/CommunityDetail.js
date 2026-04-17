@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { FiChevronLeft, FiSend } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
-import { communityPosts } from "./CommunityList";
 
 // 시간 계산 함수
 const formatRelativeTime = (dateString) => {
@@ -274,10 +273,7 @@ const DeleteButton = styled.button`
 const CommunityDetail = ({ userId = 1 }) => {
   const navigate = useNavigate();
   const { postId } = useParams();
-
-  const post = communityPosts.find(
-    (item) => Number(item.postId ?? item.id) === Number(postId),
-  );
+  const [post, setPost] = useState({});
 
   const [commentInput, setCommentInput] = useState("");
   const [comments, setComments] = useState([

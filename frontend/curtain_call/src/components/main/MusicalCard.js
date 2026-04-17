@@ -49,7 +49,7 @@ const MusicalCard = ({ musical }) => {
 
       <Content>
         <Title>{title}</Title>
-        <Rating>★ {rating}</Rating>
+        <Rating>★ {Number(rating || 0).toFixed(1)}</Rating>
         <DateText>
           {formatDate(startDate)} ~ {formatDate(endDate)}
         </DateText>

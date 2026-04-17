@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  Container as NaverMapContainer,
+  NaverMap,
+  Marker,
+} from "react-naver-maps";
 import Pagination from "../common/Pagination";
 import AxiosApi from "../../api/AxiosApi";
 
@@ -23,26 +28,28 @@ const MusicalDetailPage = () => {
 
   const [reviews, setReviews] = useState([]);
 
+  const fetchMusicalDetail = async () => {
+    const response1 = await AxiosApi.getMusical(musicalId);
+    if (response1.success) {
+      setMusicalDetail(response1.data);
+    } else {
+      alert(response1 || "뮤지컬 상세 정보 조회 실패:");
+    }
+  };
+
+  const fetchReviewList = async () => {
+    const response2 = await AxiosApi.getReviewList(musicalId);
+    if (response2.success) {
+      setReviews(response2.data);
+      setReviewCount(response2.data.length);
+    } else {
+      alert(response2 || "리뷰 목록 조회 실패:");
+    }
+  };
+
   useEffect(() => {
-    const fetchMusicalDetail = async () => {
-      try {
-        const response = await AxiosApi.getMusical(musicalId);
-        setMusicalDetail(response.data);
-      } catch (error) {
-        console.error("뮤지컬 상세 정보 조회 실패:", error);
-      }
-
-      try {
-        const response = await AxiosApi.getReviewList(musicalId);
-        setReviews(response.data);
-      } catch (error) {
-        console.error("리뷰 목록 조회 실패:", error);
-      }
-
-      setReviewCount(reviews.length);
-    };
-
     fetchMusicalDetail();
+    fetchReviewList();
 
     const handleClickOutside = (event) => {
       if (sortRef.current && !sortRef.current.contains(event.target)) {
@@ -79,7 +86,14 @@ const MusicalDetailPage = () => {
     return sortedReviews.slice(startIndex, endIndex);
   }, [sortedReviews, currentReviewPage]);
 
-  const handleSubmitReview = () => {
+  const mapCoords = useMemo(() => {
+    const lat = Number(musicalDetail.latitude);
+    const lng = Number(musicalDetail.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    return { lat, lng };
+  }, [musicalDetail.latitude, musicalDetail.longitude]);
+
+  const handleSubmitReview = async () => {
     const storedUser = localStorage.getItem("user");
 
     if (!storedUser) {
@@ -91,24 +105,25 @@ const MusicalDetailPage = () => {
     if (!isSubmitEnabled) return;
 
     const loginUser = JSON.parse(storedUser);
-    const now = new Date();
 
     const newReview = {
-      reviewId: Date.now(),
-      userName: loginUser.name || "현재사용자",
+      userId: loginUser.userId || "현재사용자",
       rating: selectedRating,
-      content: reviewContent.trim(),
-      detail: reviewContent.trim(),
-      createdAt: now.toISOString(),
+      content: reviewContent,
     };
 
-    setReviews((prev) => [newReview, ...prev]);
-    setReviewContent("");
-    setSelectedRating(0);
-    setReviewCount((prev) => prev + 1);
-    setSortType("latest");
-    setCurrentReviewPage(1);
-    setIsSortOpen(false);
+    const response = await AxiosApi.createReview(newReview, musicalId);
+    if (response.success) {
+      alert("리뷰가 등록되었습니다.");
+      setReviews((prev) => [response.data, ...prev]);
+      setReviewContent("");
+      setSelectedRating(0);
+    } else {
+      alert(response || "리뷰 등록에 실패했습니다.");
+    }
+
+    fetchMusicalDetail();
+    fetchReviewList();
   };
 
   const handleSelectSort = (type) => {
@@ -159,6 +174,11 @@ const MusicalDetailPage = () => {
     });
   };
 
+  // 소개 이미지 클릭 이벤트
+  const handleIntroImageClick = (imageUrl) => {
+    window.open(imageUrl, "_blank");
+  };
+
   return (
     <Page>
       <Container>
@@ -183,7 +203,7 @@ const MusicalDetailPage = () => {
                 )}
               </RatingStars>
               <RatingText>
-                {musicalDetail.rating} ({reviewCount})
+                {Number(musicalDetail.rating || 0).toFixed(1)} ({reviewCount})
               </RatingText>
             </RatingSummary>
 
@@ -245,29 +265,75 @@ const MusicalDetailPage = () => {
               <SectionTitle>소개이미지</SectionTitle>
               <IntroImageRow>
                 {musicalDetail.introImg1 && (
-                  <IntroImage src={musicalDetail.introImg1} alt="소개이미지" />
+                  <IntroImage
+                    src={musicalDetail.introImg1}
+                    alt="소개이미지"
+                    onClick={() =>
+                      handleIntroImageClick(musicalDetail.introImg1)
+                    }
+                  />
                 )}
                 {musicalDetail.introImg2 && (
-                  <IntroImage src={musicalDetail.introImg2} alt="소개이미지" />
+                  <IntroImage
+                    src={musicalDetail.introImg2}
+                    alt="소개이미지"
+                    onClick={() =>
+                      handleIntroImageClick(musicalDetail.introImg2)
+                    }
+                  />
                 )}
                 {musicalDetail.introImg3 && (
-                  <IntroImage src={musicalDetail.introImg3} alt="소개이미지" />
+                  <IntroImage
+                    src={musicalDetail.introImg3}
+                    alt="소개이미지"
+                    onClick={() =>
+                      handleIntroImageClick(musicalDetail.introImg3)
+                    }
+                  />
                 )}
                 {musicalDetail.introImg4 && (
-                  <IntroImage src={musicalDetail.introImg4} alt="소개이미지" />
+                  <IntroImage
+                    src={musicalDetail.introImg4}
+                    alt="소개이미지"
+                    onClick={() =>
+                      handleIntroImageClick(musicalDetail.introImg4)
+                    }
+                  />
                 )}
               </IntroImageRow>
             </SectionCard>
 
             <SectionCard>
               <SectionTitle>네이버지도</SectionTitle>
-              <MapPlaceholder>
-                <MapPin>📍</MapPin>
-                <MapTooltip>
-                  <strong>{musicalDetail.venue}</strong>
-                  <span>{musicalDetail.address}</span>
-                </MapTooltip>
-              </MapPlaceholder>
+              {mapCoords ? (
+                <MapOuter>
+                  <NaverMapContainer style={{ width: "100%", height: "100%" }}>
+                    {(navermaps) => (
+                      <NaverMap
+                        defaultCenter={
+                          new navermaps.LatLng(mapCoords.lat, mapCoords.lng)
+                        }
+                        defaultZoom={16}
+                      >
+                        <Marker
+                          defaultPosition={
+                            new navermaps.LatLng(mapCoords.lat, mapCoords.lng)
+                          }
+                          title={musicalDetail.venue || ""}
+                        />
+                      </NaverMap>
+                    )}
+                  </NaverMapContainer>
+                </MapOuter>
+              ) : (
+                <MapPlaceholder>
+                  <MapPin>📍</MapPin>
+                  <MapTooltip>
+                    <strong>{musicalDetail.venue}</strong>
+                    <span>{musicalDetail.address}</span>
+                  </MapTooltip>
+                </MapPlaceholder>
+              )}
 
               <AddressBox>
                 <AddressTitle>{musicalDetail.venue}</AddressTitle>
@@ -591,7 +657,17 @@ const IntroImage = styled.img`
   width: calc((100% - 24px) / 3);
   height: 120px;
   object-fit: cover;
+  object-position: center;
   border-radius: 12px;
+  cursor: pointer;
+`;
+
+const MapOuter = styled.div`
+  height: 260px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: #171924;
 `;
 
 const MapPlaceholder = styled.div`
