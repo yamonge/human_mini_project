@@ -4,3 +4,4 @@ yarn add react-router-dom
 yarn add react-naver-maps
 yarn add react-icons
 yarn add lucide-react
+yarn add yet-another-react-lightbox

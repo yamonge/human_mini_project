@@ -9,7 +9,23 @@ import {
 import Pagination from "../common/Pagination";
 import AxiosApi from "../../api/AxiosApi";
 
+// --- 소개 이미지 라이트박스: 슬롯 순서(백엔드 필드명) ---
+import Lightbox from "yet-another-react-lightbox";
+import { Zoom } from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/styles.css";
+
 const REVIEW_PAGE_SIZE = 5;
+
+const INTRO_IMAGE_KEYS = ["introImg1", "introImg2", "introImg3", "introImg4"];
+
+/** introImg1~4 중 앞쪽에 실제로 채워진 개수만큼 건너뛴 뒤, 해당 슬롯이 라이트박스 slides 배열에서의 인덱스 */
+function getIntroSlideIndexForSlot(musicalDetail, slotIndex) {
+  let slideIndex = 0;
+  for (let i = 0; i < slotIndex; i++) {
+    if (musicalDetail[INTRO_IMAGE_KEYS[i]]) slideIndex++;
+  }
+  return slideIndex;
+}
 
 const MusicalDetailPage = () => {
   const { musicalId } = useParams();
@@ -27,6 +43,10 @@ const MusicalDetailPage = () => {
   const sortRef = useRef(null);
 
   const [reviews, setReviews] = useState([]);
+
+  // --- 소개 이미지 라이트박스 상태 ---
+  const [introLightboxOpen, setIntroLightboxOpen] = useState(false);
+  const [introLightboxIndex, setIntroLightboxIndex] = useState(0);
 
   const fetchMusicalDetail = async () => {
     const response1 = await AxiosApi.getMusical(musicalId);
@@ -92,6 +112,13 @@ const MusicalDetailPage = () => {
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
     return { lat, lng };
   }, [musicalDetail.latitude, musicalDetail.longitude]);
+
+  // --- 소개 이미지 라이트박스: 존재하는 URL만 슬라이드로 구성 ---
+  const introLightboxSlides = useMemo(() => {
+    return INTRO_IMAGE_KEYS.map((key) => musicalDetail[key])
+      .filter(Boolean)
+      .map((src) => ({ src }));
+  }, [musicalDetail]);
 
   const handleSubmitReview = async () => {
     const storedUser = localStorage.getItem("user");
@@ -174,9 +201,12 @@ const MusicalDetailPage = () => {
     });
   };
 
-  // 소개 이미지 클릭 이벤트
-  const handleIntroImageClick = (imageUrl) => {
-    window.open(imageUrl, "_blank");
+  // --- 소개 이미지 라이트박스: 썸네일 클릭 시 해당 슬롯부터 전체 보기 ---
+  const openIntroLightbox = (slotIndex) => {
+    if (!musicalDetail[INTRO_IMAGE_KEYS[slotIndex]]) return;
+    if (introLightboxSlides.length === 0) return;
+    setIntroLightboxIndex(getIntroSlideIndexForSlot(musicalDetail, slotIndex));
+    setIntroLightboxOpen(true);
   };
 
   return (
@@ -268,36 +298,28 @@ const MusicalDetailPage = () => {
                   <IntroImage
                     src={musicalDetail.introImg1}
                     alt="소개이미지"
-                    onClick={() =>
-                      handleIntroImageClick(musicalDetail.introImg1)
-                    }
+                    onClick={() => openIntroLightbox(0)}
                   />
                 )}
                 {musicalDetail.introImg2 && (
                   <IntroImage
                     src={musicalDetail.introImg2}
                     alt="소개이미지"
-                    onClick={() =>
-                      handleIntroImageClick(musicalDetail.introImg2)
-                    }
+                    onClick={() => openIntroLightbox(1)}
                   />
                 )}
                 {musicalDetail.introImg3 && (
                   <IntroImage
                     src={musicalDetail.introImg3}
                     alt="소개이미지"
-                    onClick={() =>
-                      handleIntroImageClick(musicalDetail.introImg3)
-                    }
+                    onClick={() => openIntroLightbox(2)}
                   />
                 )}
                 {musicalDetail.introImg4 && (
                   <IntroImage
                     src={musicalDetail.introImg4}
                     alt="소개이미지"
-                    onClick={() =>
-                      handleIntroImageClick(musicalDetail.introImg4)
-                    }
+                    onClick={() => openIntroLightbox(3)}
                   />
                 )}
               </IntroImageRow>
@@ -448,6 +470,26 @@ const MusicalDetailPage = () => {
           </RightPanel>
         </Layout>
       </Container>
+
+      {/* --- 소개 이미지 라이트박스 (전체 화면 · 이전/다음 · 줌) --- */}
+      {introLightboxSlides.length > 0 && (
+        <Lightbox
+          open={introLightboxOpen}
+          close={() => setIntroLightboxOpen(false)}
+          index={introLightboxIndex}
+          slides={introLightboxSlides}
+          carousel={{ finite: true }}
+          plugins={[Zoom]}
+          zoom={{
+            scrollToZoom: true,
+            doubleClickDelay: 0,
+          }}
+          on={{
+            view: ({ index: currentIndex }) =>
+              setIntroLightboxIndex(currentIndex),
+          }}
+        />
+      )}
     </Page>
   );
 };
