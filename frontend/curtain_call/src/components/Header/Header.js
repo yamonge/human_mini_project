@@ -41,6 +41,11 @@ const Header = () => {
     }
   };
 
+  const handleGoMyPage = () => {
+    setIsMenuOpen(false);
+    navigate("/mypage");
+  };
+
   return (
     <S.HeaderContainer>
       <S.LogoSection onClick={() => navigate("/")}>
@@ -92,6 +97,13 @@ const Header = () => {
                   <S.UserName>{user_info.name}</S.UserName>
                   <S.UserEmail>{user_info.email}</S.UserEmail>
                 </S.UserInfoSection>
+
+                <S.Divider />
+
+                {/* ✅ 마이페이지 추가 */}
+                <S.MenuButton onClick={handleGoMyPage}>
+                  <span>마이페이지</span>
+                </S.MenuButton>
 
                 <S.Divider />
 

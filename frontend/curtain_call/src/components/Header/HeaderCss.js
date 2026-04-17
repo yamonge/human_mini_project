@@ -180,6 +180,25 @@ export const Divider = styled.div`
   margin: 0 16px; /* 좌우 마진 */
 `;
 
+export const MenuButton = styled.button`
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #f0f0f0; /* 기본 텍스트 색 */
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    background-color: #1c1c1e;
+  }
+`;
+
 export const LogoutButton = styled.button`
   width: 100%; /* 너비 100% */
   padding: 20px; /* 패딩 */
