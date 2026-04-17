@@ -156,10 +156,22 @@ const AxiosApi = {
   // 아이디 찾기
   findId: async (user) => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/auth/find-id`, user);
+      const response = await axios.post(`${BASE_URL}/api/auth/findId`, user);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || "아이디 찾기 실패";
+      return errorMessage;
+    }
+  },
+
+  // 비밀번호 찾기
+  findPw: async (user) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/auth/findPw`, user);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "비밀번호 찾기 실패";
       return errorMessage;
     }
   },

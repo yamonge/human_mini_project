@@ -1,6 +1,7 @@
 package com.human.musical_community.service;
 
 import com.human.musical_community.dto.request.FindIdReqDto;
+import com.human.musical_community.dto.request.FindPwReqDto;
 import com.human.musical_community.dto.request.LoginReqDto;
 import com.human.musical_community.dto.request.SignUpReqDto;
 import com.human.musical_community.dto.response.FindIdResDto;
@@ -77,6 +78,15 @@ public class AuthService {
 
         return FindIdResDto.builder()
                 .email(user.getEmail())
+                .createdAt(user.getCreatedAt())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public void findPw(FindPwReqDto dto) {
+        boolean exists = userRepository.existsByNameAndEmail(dto.getName(), dto.getEmail());
+        if (!exists) {
+            throw new IllegalArgumentException("해당 정보에 대한 계정이 존재하지 않습니다.");
+        }
     }
 }

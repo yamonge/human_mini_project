@@ -18,6 +18,26 @@ import {
   FooterLink,
 } from "./IdResultCss";
 
+/** API·router state로 넘어온 가입일(ISO 문자열, 타임스탬프, 배열 등)을 화면용 문자열로 */
+function formatJoinDateKorean(value) {
+  if (value == null || value === "") return "-";
+
+  let date;
+  if (value instanceof Date) {
+    date = value;
+  } else if (Array.isArray(value) && value.length >= 3) {
+    const [y, month, day, h = 0, min = 0, sec = 0] = value;
+    date = new Date(y, month - 1, day, h, min, sec);
+  } else if (typeof value === "object" && typeof value.format === "function") {
+    return value.format("YYYY년 MM월 DD일");
+  } else {
+    date = new Date(value);
+  }
+
+  if (Number.isNaN(date.getTime())) return "-";
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+}
+
 const IdResult = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,6 +45,14 @@ const IdResult = () => {
   // 성공 여부에 따라 화면 전환 (테스트용 기본값 false)
   // isSuccess는 location.state에서 가져오며, 없을 경우 undefined (false로 간주)
   const isSuccess = location.state?.isSuccess;
+  const email = location.state?.email;
+  const createdAt = location.state?.createdAt;
+
+  // 이메일 마스킹 처리
+  const maskedEmail =
+    typeof email === "string" ? email.replace(/@.*$/, "***") : "";
+
+  const formattedCreatedAt = formatJoinDateKorean(createdAt);
 
   return (
     // 전체 페이지를 중앙에 정렬하기 위한 컨테이너
@@ -61,7 +89,7 @@ const IdResult = () => {
                   {/* 이메일(아이디) 라벨 */}
                   <Label>이메일 (아이디)</Label>
                   {/* 이메일 값: 강조 스타일 적용 */}
-                  <Value highlight>mu***al@example.com</Value>
+                  <Value highlight>{maskedEmail}</Value>
                 </div>
                 {/* 소셜 가입 제외 태그 */}
                 <Tag>소셜 가입 제외</Tag>
@@ -75,7 +103,7 @@ const IdResult = () => {
                   {/* 가입일 라벨 */}
                   <Label>가입일</Label>
                   {/* 가입일 값 */}
-                  <Value>2025년 3월 14일</Value>
+                  <Value>{formattedCreatedAt}</Value>
                 </div>
               </InfoRow>
             </InfoBox>
