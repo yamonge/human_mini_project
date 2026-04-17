@@ -1,30 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { FiChevronLeft, FiSend } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
+import AxiosApi from "../../api/AxiosApi";
 
-// 시간 계산 함수
-const formatRelativeTime = (dateString) => {
+const formatDateTimeToMinute = (dateString) => {
   if (!dateString) return "";
 
-  // 날짜 형식의 온점(.)을 하이픈(-)으로 바꾸고 공백이 있다면 ISO 형식에 맞게 처리
-  const date = new Date(dateString.replace(/\./g, "-"));
-  const now = new Date();
-  const diffInSeconds = Math.floor((now - date) / 1000);
+  const date = new Date(dateString);
 
-  if (diffInSeconds < 60) return "방금 전";
+  if (Number.isNaN(date.getTime())) {
+    return String(dateString).slice(0, 16).replace("T", " ");
+  }
 
-  const diffInMinutes = Math.floor(diffInSeconds / 60);
-  if (diffInMinutes < 60) return `${diffInMinutes}분 전`;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
 
-  const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours < 24) return `${diffInHours}시간 전`;
-
-  const diffInDays = Math.floor(diffInHours / 24);
-  if (diffInDays < 7) return `${diffInDays}일 전`;
-
-  // 7일 이상 지나면 원래 날짜 표시
-  return dateString.split(" ")[0]; // 시간 정보 제외하고 날짜만 표시
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
 const GlobalStyle = createGlobalStyle`
@@ -59,6 +54,7 @@ const BackButton = styled.button`
   padding: 0;
   font-size: 14px;
   margin-bottom: 32px;
+
   &:hover {
     color: #ececed;
   }
@@ -160,6 +156,7 @@ const CommentHeader = styled.div`
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 24px;
+
   span {
     color: #c9a84c;
   }
@@ -189,6 +186,7 @@ const TextArea = styled.textarea`
   resize: none;
   outline: none;
   font-size: 14px;
+
   &::placeholder {
     color: #5c5f63;
   }
@@ -203,6 +201,7 @@ const SendButton = styled.button`
   color: #5c5f63;
   cursor: pointer;
   display: flex;
+
   &:hover {
     color: #c9a84c;
   }
@@ -219,6 +218,7 @@ const CommentItem = styled.div`
   gap: 16px;
   padding-bottom: 24px;
   border-bottom: 1px solid #2e3135;
+
   &:last-child {
     border-bottom: none;
     padding-bottom: 0;
@@ -229,6 +229,7 @@ const CommentBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 `;
 
 const CommentMeta = styled.div`
@@ -258,40 +259,14 @@ const CommentText = styled.p`
   line-height: 1.5;
 `;
 
-const DeleteButton = styled.button`
-  background: none;
-  border: none;
-  color: #5c5f63;
-  font-size: 12px;
-  cursor: pointer;
-  &:hover {
-    color: #ff4d4d;
-    text-decoration: underline;
-  }
-`;
-
-const CommunityDetail = ({ userId = 1 }) => {
+const CommunityDetail = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
-  const [post, setPost] = useState({});
 
+  const [post, setPost] = useState(null);
   const [commentInput, setCommentInput] = useState("");
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      author: "같이갈래요",
-      date: "2026.04.08",
-      content: "저 관심 있어요! 쪽지 보내볼게요 :)",
-      profileColor: "#00C471",
-    },
-    {
-      id: 2,
-      author: "위키드러버",
-      date: "2026.04.08",
-      content: "@같이갈래요 쪽지 확인했어요! 답장 드릴게요~",
-      profileColor: "#ff4d4d",
-    },
-  ]);
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const categoryColors = {
     "정보 공유": "#7C3AED",
@@ -304,29 +279,85 @@ const CommunityDetail = ({ userId = 1 }) => {
     "공연 후기": "#D97706",
   };
 
-  const handleCommentSubmit = () => {
+  const fetchDetailData = async () => {
+    setLoading(true);
+
+    const [postResult, commentResult] = await Promise.all([
+      AxiosApi.getPost(postId),
+      AxiosApi.getCommentList(postId),
+    ]);
+
+    console.log("게시글 상세 조회 결과:", postResult);
+    console.log("댓글 목록 조회 결과:", commentResult);
+
+    const postData = postResult?.data ?? postResult;
+    const commentData = commentResult?.data ?? commentResult;
+
+    if (postData && typeof postData === "object" && !Array.isArray(postData)) {
+      setPost(postData);
+    } else {
+      setPost(null);
+      console.error(postResult);
+    }
+
+    if (Array.isArray(commentData)) {
+      setComments(commentData);
+    } else {
+      setComments([]);
+      console.error(commentResult);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchDetailData();
+  }, [postId]);
+
+  const handleCommentSubmit = async () => {
+    const storedUser = localStorage.getItem("user");
+
+    if (!storedUser) {
+      alert("로그인 후 댓글을 등록할 수 있습니다.");
+      navigate("/login");
+      return;
+    }
+
     if (commentInput.trim() === "") return;
 
-    const now = new Date();
-    const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+    const loginUser = JSON.parse(storedUser);
 
-    const newComment = {
-      id: Date.now(),
-      author: "나(User)",
-      date: formattedDate,
-      content: commentInput,
-      profileColor: "#c9a84c",
+    const commentData = {
+      userId: Number(loginUser.userId ?? loginUser.id),
+      content: commentInput.trim(),
     };
 
-    setComments([...comments, newComment]);
-    setCommentInput("");
+    const result = await AxiosApi.createComment(commentData, postId);
+
+    if (result?.success || result?.data || typeof result === "object") {
+      setCommentInput("");
+      fetchDetailData();
+      return;
+    }
+
+    alert(result?.message || result || "댓글 등록 실패");
   };
 
-  const handleDeleteComment = (id) => {
-    if (window.confirm("댓글을 삭제하시겠습니까?")) {
-      setComments(comments.filter((comment) => comment.id !== id));
-    }
-  };
+  if (loading) {
+    return (
+      <>
+        <GlobalStyle />
+        <DetailWrapper>
+          <DetailLayout>
+            <BackButton onClick={() => navigate("/community")}>
+              <FiChevronLeft /> 커뮤니티로 돌아가기
+            </BackButton>
+            <EmptyMessage>게시글을 불러오는 중입니다.</EmptyMessage>
+          </DetailLayout>
+        </DetailWrapper>
+      </>
+    );
+  }
 
   if (!post) {
     return (
@@ -344,6 +375,18 @@ const CommunityDetail = ({ userId = 1 }) => {
     );
   }
 
+  const postAuthor = post.userName ?? "익명";
+  const postDate = post.createdAt ?? "";
+  const postCategory = post.category ?? "";
+  const postTitle = post.title ?? "";
+  const postContent = post.content ?? "";
+
+  const sortedComments = [...comments].sort((a, b) => {
+    const dateA = new Date(a.createdAt ?? "");
+    const dateB = new Date(b.createdAt ?? "");
+    return dateB - dateA;
+  });
+
   return (
     <>
       <GlobalStyle />
@@ -354,24 +397,24 @@ const CommunityDetail = ({ userId = 1 }) => {
           </BackButton>
 
           <PostContainer>
-            <CategoryTag bgColor={categoryColors[post.category]}>
-              {post.category}
+            <CategoryTag bgColor={categoryColors[postCategory]}>
+              {postCategory}
             </CategoryTag>
-            <PostTitle>{post.title}</PostTitle>
+
+            <PostTitle>{postTitle}</PostTitle>
+
             <AuthorSection>
               <ProfileCircle color="#ff4d4d">
-                {(post.author || "익명").substring(0, 1)}
+                {postAuthor.substring(0, 1)}
               </ProfileCircle>
+
               <AuthorInfo>
-                <AuthorName>{post.author}</AuthorName>
-                <PostDate>
-                  {formatRelativeTime(
-                    post.createdAt || post.created_at || post.date,
-                  )}
-                </PostDate>
+                <AuthorName>{postAuthor}</AuthorName>
+                <PostDate>{formatDateTimeToMinute(postDate)}</PostDate>
               </AuthorInfo>
             </AuthorSection>
-            <PostContent>{post.content}</PostContent>
+
+            <PostContent>{postContent}</PostContent>
           </PostContainer>
 
           <CommentSection>
@@ -397,31 +440,47 @@ const CommunityDetail = ({ userId = 1 }) => {
             </CommentInputWrapper>
 
             <CommentList>
-              {comments.map((comment) => (
-                <CommentItem key={comment.id}>
-                  <ProfileCircle color={comment.profileColor}>
-                    {comment.author.substring(0, 1)}
-                  </ProfileCircle>
+              {sortedComments.map((comment, index) => {
+                const commentAuthor =
+                  comment.author ??
+                  comment.userName ??
+                  comment.writer ??
+                  comment.name ??
+                  "익명";
 
-                  <CommentBody>
-                    <CommentMeta>
-                      <AuthorDateBox>
-                        <CommentAuthor>{comment.author}</CommentAuthor>
-                        <PostDate>{formatRelativeTime(comment.date)}</PostDate>
-                      </AuthorDateBox>
+                const commentDate =
+                  comment.date ?? comment.createdAt ?? comment.created_at ?? "";
 
-                      {comment.author === "나(User)" && (
-                        <DeleteButton
-                          onClick={() => handleDeleteComment(comment.id)}
-                        >
-                          삭제
-                        </DeleteButton>
-                      )}
-                    </CommentMeta>
-                    <CommentText>{comment.content}</CommentText>
-                  </CommentBody>
-                </CommentItem>
-              ))}
+                const commentContent = comment.content ?? "";
+
+                return (
+                  <CommentItem
+                    key={
+                      comment.id ??
+                      comment.commentId ??
+                      comment.comment_id ??
+                      index
+                    }
+                  >
+                    <ProfileCircle color="#00C471">
+                      {commentAuthor.substring(0, 1)}
+                    </ProfileCircle>
+
+                    <CommentBody>
+                      <CommentMeta>
+                        <AuthorDateBox>
+                          <CommentAuthor>{commentAuthor}</CommentAuthor>
+                          <PostDate>
+                            {formatDateTimeToMinute(commentDate)}
+                          </PostDate>
+                        </AuthorDateBox>
+                      </CommentMeta>
+
+                      <CommentText>{commentContent}</CommentText>
+                    </CommentBody>
+                  </CommentItem>
+                );
+              })}
             </CommentList>
           </CommentSection>
         </DetailLayout>

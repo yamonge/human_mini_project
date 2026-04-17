@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import {
   FiChevronLeft,
@@ -7,29 +7,24 @@ import {
   FiEdit2,
 } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
+import AxiosApi from "../../api/AxiosApi";
 
-// 시간 계산 함수
-const formatRelativeTime = (dateString) => {
+const formatDateTimeToMinute = (dateString) => {
   if (!dateString) return "";
 
-  // 날짜 형식의 온점(.)을 하이픈(-)으로 바꾸고 공백이 있다면 ISO 형식에 맞게 처리
-  const date = new Date(dateString.replace(/\./g, "-"));
-  const now = new Date();
-  const diffInSeconds = Math.floor((now - date) / 1000);
+  const date = new Date(dateString);
 
-  if (diffInSeconds < 60) return "방금 전";
+  if (Number.isNaN(date.getTime())) {
+    return String(dateString).slice(0, 16).replace("T", " ");
+  }
 
-  const diffInMinutes = Math.floor(diffInSeconds / 60);
-  if (diffInMinutes < 60) return `${diffInMinutes}분 전`;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
 
-  const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours < 24) return `${diffInHours}시간 전`;
-
-  const diffInDays = Math.floor(diffInHours / 24);
-  if (diffInDays < 7) return `${diffInDays}일 전`;
-
-  // 7일 이상 지나면 원래 날짜 표시
-  return dateString.split(" ")[0]; // 시간 정보 제외하고 날짜만 표시
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
 const GlobalStyle = createGlobalStyle`
@@ -308,7 +303,7 @@ const filters = [
   "Q&A",
 ];
 
-const CommunityList = ({ posts }) => {
+const CommunityList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const initialCategory = location.state?.selectedCategory || "전체";
@@ -317,21 +312,66 @@ const CommunityList = ({ posts }) => {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [sortType, setSortType] = useState("최신순");
   const [searchTerm, setSearchTerm] = useState("");
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const displayPosts = posts.length > 0 ? posts : "포스트가 없습니다.";
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+
+      const result = await AxiosApi.getPostList();
+      console.log("게시글 목록 조회 결과:", result);
+      console.log("게시글 목록 data:", result?.data);
+
+      let postList = [];
+
+      if (Array.isArray(result?.data)) {
+        postList = result.data;
+      } else if (Array.isArray(result)) {
+        postList = result;
+      } else {
+        setPosts([]);
+        setLoading(false);
+        console.error(result);
+        return;
+      }
+
+      const postsWithCommentCount = await Promise.all(
+        postList.map(async (post) => {
+          const postId = post.postId ?? post.id ?? post.post_id;
+
+          const commentResult = await AxiosApi.getCommentList(postId);
+          const commentList = Array.isArray(commentResult?.data)
+            ? commentResult.data
+            : Array.isArray(commentResult)
+              ? commentResult
+              : [];
+
+          return {
+            ...post,
+            commentCount: commentList.length,
+          };
+        }),
+      );
+
+      setPosts(postsWithCommentCount);
+      setLoading(false);
+    };
+
+    fetchPosts();
+  }, []);
 
   const normalizedPosts = useMemo(() => {
-    return displayPosts.map((post, index) => ({
+    return posts.map((post, index) => ({
       id: post.id ?? post.postId ?? index + 1,
       category: post.category ?? "",
       title: post.title ?? "",
-      content: post.content ?? post.preview ?? "",
-      author: post.author ?? post.userName ?? "익명",
-      rawDate: post.date ?? post.createdAt ?? post.created_at ?? "",
-      // date: post.date ?? post.createdAt ?? post.created_at ?? "",
-      comments: Number(post.comments ?? post.commentCount ?? 0),
+      content: post.content ?? "",
+      author: post.userName ?? "익명",
+      rawDate: post.createdAt || "",
+      comments: Number(post.commentCount ?? 0),
     }));
-  }, [displayPosts]);
+  }, [posts]);
 
   const filteredPosts = useMemo(() => {
     return normalizedPosts.filter((post) => {
@@ -428,7 +468,9 @@ const CommunityList = ({ posts }) => {
           </FilterRow>
 
           <PostList>
-            {sortedPosts.length > 0 ? (
+            {loading ? (
+              <EmptyBox>게시글을 불러오는 중입니다.</EmptyBox>
+            ) : sortedPosts.length > 0 ? (
               sortedPosts.map((post) => (
                 <PostCard
                   key={post.id}
@@ -445,17 +487,7 @@ const CommunityList = ({ posts }) => {
                   <PostMeta>
                     <AuthorDate>
                       <span>@{post.author}</span>
-                      <span>
-                        {formatRelativeTime(post.rawDate).includes("전") ||
-                        formatRelativeTime(post.rawDate) === "방금 전" ? (
-                          <>
-                            {post.rawDate.split(" ")[0]} (
-                            {formatRelativeTime(post.rawDate)})
-                          </>
-                        ) : (
-                          <>{formatRelativeTime(post.rawDate)}</>
-                        )}
-                      </span>
+                      <span>{formatDateTimeToMinute(post.rawDate)}</span>
                     </AuthorDate>
 
                     <CommentCount>
@@ -465,7 +497,7 @@ const CommunityList = ({ posts }) => {
                 </PostCard>
               ))
             ) : (
-              <EmptyBox>검색 결과가 없습니다.</EmptyBox>
+              <EmptyBox>아직 게시글이 없습니다.</EmptyBox>
             )}
           </PostList>
 
