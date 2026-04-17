@@ -3,6 +3,8 @@ package com.human.musical_community.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -28,6 +30,11 @@ public class Post {
 
     @Column(length = 50)
     private String category;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @Builder.Default
+    @ToString.Exclude
+    private List<Comment> comments = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

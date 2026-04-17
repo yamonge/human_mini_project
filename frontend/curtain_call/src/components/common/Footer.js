@@ -72,44 +72,44 @@ const Footer = () => {
               <CommunityGrid>
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("자유게시판")}
+                  onClick={() => handleMoveCommunityTab("티켓 양도")}
                 >
-                  자유게시판
+                  티켓 양도
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("뮤지컬 후기")}
+                  onClick={() => handleMoveCommunityTab("정보 공유")}
                 >
-                  뮤지컬 후기
+                  정보 공유
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("같이봐요")}
+                  onClick={() => handleMoveCommunityTab("공연메이트")}
                 >
-                  같이봐요
+                  공연메이트
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("정보공유")}
+                  onClick={() => handleMoveCommunityTab("토크 공간")}
                 >
-                  정보공유
+                  토크 공간
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("공지사항")}
+                  onClick={() => handleMoveCommunityTab("공연후기")}
                 >
-                  공지사항
+                  공연후기
                 </MenuLink>
 
                 <MenuLink
                   type="button"
-                  onClick={() => handleMoveCommunityTab("질문 글")}
+                  onClick={() => handleMoveCommunityTab("Q&A")}
                 >
-                  질문 글
+                  Q&amp;A
                 </MenuLink>
               </CommunityGrid>
             </CommunityColumn>

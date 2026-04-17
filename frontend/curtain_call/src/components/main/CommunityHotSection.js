@@ -2,43 +2,55 @@ import { useMemo } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
+// CommunityList.js CategoryColors와 동일한 태그 색상
 const categoryStyleMap = {
-  "티켓 양도": {
-    text: "#F4B44F",
-    bg: "rgba(244, 180, 79, 0.14)",
-    iconBg: "rgba(244, 180, 79, 0.16)",
-    icon: "🎫",
-  },
   "정보 공유": {
-    text: "#3DD9C4",
-    bg: "rgba(61, 217, 196, 0.14)",
-    iconBg: "rgba(61, 217, 196, 0.16)",
+    text: "#FFFFFF",
+    bg: "#7C3AED",
+    iconBg: "rgba(124, 58, 237, 0.22)",
     icon: "📢",
   },
-  공연메이트: {
-    text: "#60A5FA",
-    bg: "rgba(96, 165, 250, 0.14)",
-    iconBg: "rgba(96, 165, 250, 0.16)",
-    icon: "🤝",
-  },
-
   "토크 공간": {
-    text: "#A78BFA",
-    bg: "rgba(167, 139, 250, 0.14)",
-    iconBg: "rgba(167, 139, 250, 0.16)",
+    text: "#FFFFFF",
+    bg: "#0F766E",
+    iconBg: "rgba(15, 118, 110, 0.22)",
     icon: "💬",
   },
+  "Q&A": {
+    text: "#FFFFFF",
+    bg: "#059669",
+    iconBg: "rgba(5, 150, 105, 0.22)",
+    icon: "❓",
+  },
+  공연메이트: {
+    text: "#FFFFFF",
+    bg: "#0369A1",
+    iconBg: "rgba(3, 105, 161, 0.22)",
+    icon: "🤝",
+  },
+  "공연 메이트": {
+    text: "#FFFFFF",
+    bg: "#0369A1",
+    iconBg: "rgba(3, 105, 161, 0.22)",
+    icon: "🤝",
+  },
+  "티켓 양도": {
+    text: "#FFFFFF",
+    bg: "#DC2626",
+    iconBg: "rgba(220, 38, 38, 0.22)",
+    icon: "🎫",
+  },
   공연후기: {
-    text: "#F59E0B",
-    bg: "rgba(245, 158, 11, 0.14)",
-    iconBg: "rgba(245, 158, 11, 0.16)",
+    text: "#FFFFFF",
+    bg: "#D97706",
+    iconBg: "rgba(217, 119, 6, 0.22)",
     icon: "⭐",
   },
-  "Q&A": {
-    text: "#F87171",
-    bg: "rgba(248, 113, 113, 0.14)",
-    iconBg: "rgba(248, 113, 113, 0.16)",
-    icon: "❓",
+  "공연 후기": {
+    text: "#FFFFFF",
+    bg: "#D97706",
+    iconBg: "rgba(217, 119, 6, 0.22)",
+    icon: "⭐",
   },
 };
 
@@ -77,9 +89,9 @@ const CommunityHotSection = ({ posts }) => {
             <Grid>
               {hotPosts.map((post) => {
                 const style = categoryStyleMap[post.category] || {
-                  text: "#C9A84C",
-                  bg: "rgba(201, 168, 76, 0.14)",
-                  iconBg: "rgba(201, 168, 76, 0.16)",
+                  text: "#9da0a4",
+                  bg: "#2e3135",
+                  iconBg: "rgba(46, 49, 53, 0.6)",
                   icon: "•",
                 };
 

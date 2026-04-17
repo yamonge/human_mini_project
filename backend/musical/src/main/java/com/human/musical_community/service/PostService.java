@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,10 +40,17 @@ public class PostService {
         return PostResDto.from(saved);
     }
 
-    // 전체 목록 조회 (최신순)
+    // 전체 목록 조회 (최신순, 댓글 수 포함)
     @Transactional(readOnly = true)
     public List<PostResDto> getPostList() {
         return postRepository.findAllByOrderByCreatedAtDesc()
+                .stream()
+                .collect(Collectors.toMap(
+                        Post::getPostId,
+                        p -> p,
+                        (existing, dup) -> existing,
+                        LinkedHashMap::new))
+                .values()
                 .stream()
                 .map(PostResDto::from)
                 .collect(Collectors.toList());
