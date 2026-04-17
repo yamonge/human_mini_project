@@ -14,9 +14,8 @@ const MainPage = () => {
   const fetchPosts = async () => {
     const response = await AxiosApi.getPostList();
     if (response.success) {
-      // TODO: 포스트 hot 조회 로직 구현 4개만
-      const hotPosts = response.data
-        .sort((a, b) => b.comments - a.comments)
+      const hotPosts = [...response.data]
+        .sort((a, b) => (b.commentCount ?? 0) - (a.commentCount ?? 0))
         .slice(0, 4);
       setPosts(hotPosts);
     } else {

@@ -316,6 +316,7 @@ const CommunityList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchPosts = async () => {
       setLoading(true);
 
@@ -336,25 +337,7 @@ const CommunityList = () => {
         return;
       }
 
-      const postsWithCommentCount = await Promise.all(
-        postList.map(async (post) => {
-          const postId = post.postId ?? post.id ?? post.post_id;
-
-          const commentResult = await AxiosApi.getCommentList(postId);
-          const commentList = Array.isArray(commentResult?.data)
-            ? commentResult.data
-            : Array.isArray(commentResult)
-              ? commentResult
-              : [];
-
-          return {
-            ...post,
-            commentCount: commentList.length,
-          };
-        }),
-      );
-
-      setPosts(postsWithCommentCount);
+      setPosts(postList);
       setLoading(false);
     };
 

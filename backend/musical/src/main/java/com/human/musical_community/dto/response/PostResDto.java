@@ -17,6 +17,7 @@ public class PostResDto {
     private String category;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private int commentCount;
 
     public static PostResDto from(Post p) {
         return PostResDto.builder()
@@ -28,6 +29,7 @@ public class PostResDto {
                 .category(p.getCategory())
                 .createdAt(p.getCreatedAt())
                 .updatedAt(p.getUpdatedAt())
+                .commentCount(p.getComments() != null ? p.getComments().size() : 0)
                 .build();
     }
 }
