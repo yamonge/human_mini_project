@@ -87,8 +87,9 @@ const FindAccount = () => {
         },
       });
     } else {
-      alert(response);
-      return;
+      navigate("/id-result", {
+        state: { isSuccess: false },
+      });
     }
   };
 
